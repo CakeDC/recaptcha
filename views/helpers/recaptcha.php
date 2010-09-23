@@ -1,7 +1,5 @@
 <?php
 /**
- * Bitly plugin for CakePHP
- *
  * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
