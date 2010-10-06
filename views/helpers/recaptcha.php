@@ -1,5 +1,7 @@
 <?php
 /**
+ * Bitly plugin for CakePHP
+ *
  * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
@@ -31,6 +33,8 @@ class RecaptchaHelper extends AppHelper {
  */
 	public $apiUrl = 'http://api.recaptcha.net';
 
+ 
+
 /**
  * Displays the Recaptcha input
  *
@@ -38,14 +42,18 @@ class RecaptchaHelper extends AppHelper {
  * @param boolean
  * @return string
  */
-	function display($options = array()) {
+	public function display($options = array()) {
 		$defaults = array(
 			'element' => null, 
 			'publicKey' => Configure::read('Recaptcha.publicKey'),
 			'error' => null,
 			'ssl' => true,
-			'theme' => 'white'
-		);
+                        'theme' => "white",
+                        'lang'  => 'en'
+                );
+                if(Configure::read("Config.language")) {
+                    $defaults['lang'] = Configure::read("Config.language");
+                }
 		$options = array_merge($defaults, $options);
 		extract($options);
 
@@ -73,7 +81,8 @@ class RecaptchaHelper extends AppHelper {
 		return '
                  <script type="text/javascript">
                      var RecaptchaOptions = {
-                        theme : "'. $theme .'"
+                        theme : "'. $theme .'",
+                        lang : "'. $lang .'"
                      };
                 </script>
                 <script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
@@ -82,7 +91,6 @@ class RecaptchaHelper extends AppHelper {
 			<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
 			<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
 		</noscript>';
-
 	}
 
 /**
@@ -90,7 +98,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @return string
  */
-	function signupUrl($appname = null) {
+	public function signupUrl($appname = null) {
 		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
 	}
 
@@ -111,7 +119,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @return string
  */
-	function __AesEncrypt($value, $key) {
+	public function __AesEncrypt($value, $key) {
 		if (!function_exists('mcrypt_encrypt')) {
 			throw new Exception(__d('recaptcha', 'To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.', true));
 		}
@@ -202,3 +210,4 @@ class RecaptchaHelper extends AppHelper {
 	}
 
 }
+
