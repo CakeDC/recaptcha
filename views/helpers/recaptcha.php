@@ -119,7 +119,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @return string
  */
-	public function __AesEncrypt($value, $key) {
+	private function __AesEncrypt($value, $key) {
 		if (!function_exists('mcrypt_encrypt')) {
 			throw new Exception(__d('recaptcha', 'To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.', true));
 		}
