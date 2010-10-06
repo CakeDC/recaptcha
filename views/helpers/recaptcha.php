@@ -43,7 +43,9 @@ class RecaptchaHelper extends AppHelper {
 			'element' => null, 
 			'publicKey' => Configure::read('Recaptcha.publicKey'),
 			'error' => null,
-			'ssl' => true);
+			'ssl' => true,
+			'theme' => 'white'
+		);
 		$options = array_merge($defaults, $options);
 		extract($options);
 
@@ -68,12 +70,19 @@ class RecaptchaHelper extends AppHelper {
 			return $View->element($element, $elementOptions);
 		}
 
-		return '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
+		return '
+                 <script type="text/javascript">
+                     var RecaptchaOptions = {
+                        theme : "'. $theme .'"
+                     };
+                </script>
+                <script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
 		<noscript>
 			<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
 			<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
 			<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
 		</noscript>';
+
 	}
 
 /**
