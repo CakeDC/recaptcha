@@ -4,7 +4,7 @@ The Recaptcha plugin for CakePHP provides spam protection in an easy use helper.
 
 ## Usage ##
 
-To use the recaptcha plugin, include the following two lines in your `/app/config/bootstrap.php` file.
+To use the recaptcha plugin its required to include the following two lines in your `/app/config/bootstrap.php` file.
 
 	Configure::write('Recaptcha.publicKey', 'your-public-api-key');
 	Configure::write('Recaptcha.privateKey', 'your-private-api-key');

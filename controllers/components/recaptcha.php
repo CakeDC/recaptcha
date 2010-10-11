@@ -52,38 +52,55 @@ class RecaptchaComponent extends Object {
  */
 	public $actions = array();
 
+/**
+ * Settings
+ *
+ * @var array
+ */
+	public $settings = array();
+
  /**
  * Callback
  *
  * @param object Controller object
  */
-	public function initialize(&$controller, $settings = array()) {
+	public function initialize(Controller $controller, $settings = array()) {
 		$this->privateKey = Configure::read('Recaptcha.privateKey');
 		$this->Controller = $controller;
 
- 		if ($this->enabled == true) {
-			foreach ($settings as $setting => $value) {
-				if (isset($this->{$setting})) {
-					$this->{$setting} = $value;
-				}
-			}
-
- 			if (empty($this->privateKey)) {
-				throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Cofigure::write('Recaptcha.privateKey', 'your-key');!", true));
-			}
-
-			$controller->helpers[] = 'Recaptcha.Recaptcha';
+		if (empty($this->privateKey)) {
+			throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Cofigure::write('Recaptcha.privateKey', 'your-key');!", true));
 		}
 
-		if (in_array($this->Controller->action, $this->actions)) {
-			if (!$this->verify()) {
-				$this->Controller->{$this->Controller->modelClass}->invalidate('recaptcha', $this->error);
+		$defaults = array(
+			'modelClass' => $this->Controller->modelClass,
+			'errorField' => 'recaptcha',
+			'actions' => array());
+
+		$this->settings = array_merge($defaults, $settings);
+		$this->actions = array_merge($this->actions, $this->settings['actions']);
+		extract($this->settings);
+
+		if ($this->enabled == true) {
+			$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
+			$this->Controller->{$modelClass}->Behaviors->attach('Recaptcha.Recaptcha', array(
+				'field' => $errorField));
+
+			$this->Controller->{$modelClass}->recaptcha = true;
+			if (in_array($this->Controller->action, $this->actions)) {
+				if (!$this->verify()) {
+					$this->Controller->{$modelClass}->recaptcha = false;
+					$this->Controller->{$modelClass}->recaptchaError = $this->error;
+				}
 			}
 		}
 	}
 
 /**
  * Verifies the recaptcha input
+ *
+ * Please note that you still have to pass the result to the model and do
+ * the validation there to make sure the data is not saved!
  *
  * @return boolean True if the response was correct
  */
