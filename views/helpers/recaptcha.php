@@ -32,6 +32,13 @@ class RecaptchaHelper extends AppHelper {
 	public $apiUrl = 'http://api.recaptcha.net';
 
 /**
+ * View helpers
+ *
+ * @var array
+ */
+	public $helpers = array('Html');
+
+/**
  * Displays the Recaptcha input
  *
  * @param
@@ -52,38 +59,60 @@ class RecaptchaHelper extends AppHelper {
 			$defaults['lang'] = Configure::read('Config.language');
 		}
 		$options = array_merge($defaults, $options);
-		extract($options);
-
-		$server = $ssl ? $this->secureApiUrl : $this->apiUrl;
 
 		$errorpart = '';
-		if ($error) {
-			$errorpart = '&amp;error=' . $error;
+		if ($options['error']) {
+			$errorpart = '&amp;error=' . $options['error'];
 		}
 
-		if (!empty($element)) {
+		if (!empty($options['element'])) {
 			$elementOptions = array();
-			if (is_array($element)) {
-				$keys = array_keys($element);
-				$elementOptions = $element[$keys[0]];
+			if (is_array($options['element'])) {
+				$keys = array_keys($options['element']);
+				$elementOptions = $options['element'][$keys[0]];
 			}
 			$View = $this->__view();
-			return $View->element($element, $elementOptions);
+			return $View->element($options['element'], $elementOptions);
 		}
 
-		return '
-                 <script type="text/javascript">
-                     var RecaptchaOptions = {
-                        theme : "'. $theme .'",
-                        lang : "'. $lang .'"
-                     };
-                </script>
-                <script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
-		<noscript>
-			<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
-			<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-			<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-		</noscript>';
+		$result = $this->_buildOptions($options);
+		$result .= $this->_buildScripts($options);
+		return $result;
+	}
+
+/**
+ * Build the Recaptcha options, and return script block for output.
+ *
+ * @param array $options Options
+ * @return string
+ */
+	protected function _buildOptions($options) {
+		$js = <<<ENDJS
+var RecaptchaOptions = {
+	theme: "${options['theme']}",
+	lang: "${options['lang']}"
+};
+ENDJS;
+		return $this->Html->scriptBlock($js);
+	}
+
+/**
+ * Build the script tags to show recaptcha
+ *
+ * @param array $options Options
+ * @return string
+ */
+	protected function _buildScripts($options) {
+		$server = $options['ssl'] ? $this->secureApiUrl : $this->apiUrl;
+		$jsCode = $this->Html->script($server . '/challenge?k=' . $options['publicKey']);
+		$noJsCode = <<<ENDCODE
+<noscript>
+	<iframe src="${server}/noscript?k=${options['publicKey']}" height="300" width="500" frameborder="0"></iframe><br/>
+	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+	<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+</noscript>
+ENDCODE;
+		return $jsCode . $noJsCode;
 	}
 
 /**
