@@ -1,7 +1,5 @@
 <?php
 /**
- * Bitly plugin for CakePHP
- *
  * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
@@ -33,8 +31,6 @@ class RecaptchaHelper extends AppHelper {
  */
 	public $apiUrl = 'http://api.recaptcha.net';
 
- 
-
 /**
  * Displays the Recaptcha input
  *
@@ -48,24 +44,21 @@ class RecaptchaHelper extends AppHelper {
 			'publicKey' => Configure::read('Recaptcha.publicKey'),
 			'error' => null,
 			'ssl' => true,
-                        'theme' => "white",
-                        'lang'  => 'en'
-                );
-                if(Configure::read("Config.language")) {
-                    $defaults['lang'] = Configure::read("Config.language");
-                }
+			'theme' => 'white',
+			'lang'  => 'en'
+		);
+
+		if (Configure::read('Config.language')) {
+			$defaults['lang'] = Configure::read('Config.language');
+		}
 		$options = array_merge($defaults, $options);
 		extract($options);
 
-		if ($ssl) {
-			$server = $this->secureApiUrl;
-		} else {
-			$server = $this->apiUrl;
-		}
+		$server = $ssl ? $this->secureApiUrl : $this->apiUrl;
 
-		$errorpart = "";
+		$errorpart = '';
 		if ($error) {
-			$errorpart = "&amp;error=" . $error;
+			$errorpart = '&amp;error=' . $error;
 		}
 
 		if (!empty($element)) {
@@ -132,7 +125,7 @@ class RecaptchaHelper extends AppHelper {
 	}
 
 /**
- * 
+ * Mail-hide URL
  *
  * @return string base 64 encrypted string
  */
@@ -208,6 +201,4 @@ class RecaptchaHelper extends AppHelper {
 		}
 		return ClassRegistry::getObject('view');
 	}
-
 }
-
