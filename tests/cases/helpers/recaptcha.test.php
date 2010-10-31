@@ -52,6 +52,7 @@ class RecaptchaHelperTest extends CakeTestCase {
  */
 	function setup() {
 		$view = new View(new PostsTestController());
+		$this->Recaptcha = new RecaptchaHelper();
 		ClassRegistry::addObject('view', $view);
 	}
 
@@ -63,5 +64,16 @@ class RecaptchaHelperTest extends CakeTestCase {
 	function tearDown() {
 		ClassRegistry::flush();
 		unset($this->Recaptcha);
+	}
+
+/**
+ * testSignupUrl
+ *
+ * @return void
+ */
+	function testSignupUrl() {
+		$result = $this->Recaptcha->signupUrl('test');
+		$expected = 'http://recaptcha.net/api/getkey?domain=' . WWW_ROOT . '&amp;app=test' ;
+		$this->assertIdentical($expected, $result);
 	}
 }

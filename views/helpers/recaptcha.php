@@ -92,7 +92,7 @@ class RecaptchaHelper extends AppHelper {
  * @return string
  */
 	public function signupUrl($appname = null) {
-		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
+		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appname);
 	}
 
 /**
