@@ -60,11 +60,6 @@ class RecaptchaHelper extends AppHelper {
 		}
 		$options = array_merge($defaults, $options);
 
-		$errorpart = '';
-		if ($options['error']) {
-			$errorpart = '&amp;error=' . $options['error'];
-		}
-
 		if (!empty($options['element'])) {
 			$elementOptions = array();
 			if (is_array($options['element'])) {
@@ -103,11 +98,17 @@ ENDJS;
  * @return string
  */
 	protected function _buildScripts($options) {
+		$errorpart = '';
+		if ($options['error']) {
+			$errorpart = '&amp;error=' . $options['error'];
+		}
+
 		$server = $options['ssl'] ? $this->secureApiUrl : $this->apiUrl;
-		$jsCode = $this->Html->script($server . '/challenge?k=' . $options['publicKey']);
+		$query = '?k=' . $options['publicKey'] . $errorpart;
+		$jsCode = $this->Html->script($server . '/challenge' . $query);
 		$noJsCode = <<<ENDCODE
 <noscript>
-	<iframe src="${server}/noscript?k=${options['publicKey']}" height="300" width="500" frameborder="0"></iframe><br/>
+	<iframe src="${server}/noscript${query}" height="300" width="500" frameborder="0"></iframe><br/>
 	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
 	<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
 </noscript>
