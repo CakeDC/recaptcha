@@ -84,8 +84,21 @@ class RecaptchaHelperTest extends CakeTestCase {
  * @return void
  */
 	function testDisplayDefault() {
-		$result = $this->Recaptcha->display();
-		debug($result, true);
-		
+		$result = $this->Recaptcha->display(array('publicKey' => 'TestKey'));
+		$expected = <<<TEXT
+<script type="text/javascript">
+//<![CDATA[
+var RecaptchaOptions = {
+	theme: "white",
+	lang: "en-us"
+};
+//]]>
+</script><script type="text/javascript" src="http://api-secure.recaptcha.net/challenge?k=TestKey"></script><noscript>
+	<iframe src="http://api-secure.recaptcha.net/noscript?k=TestKey" height="300" width="500" frameborder="0"></iframe><br/>
+	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+	<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+</noscript>
+TEXT;
+		$this->assertIdentical($expected, $result);
 	}
 }
