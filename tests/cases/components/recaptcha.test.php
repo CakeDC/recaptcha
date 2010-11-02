@@ -9,7 +9,6 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Lib', 'AppTestCase');
 App::import('Core', 'Controller');
 App::import('Component', 'Recaptcha.Recaptcha');
 
@@ -17,7 +16,7 @@ Mock::generatePartial('Recaptcha', 'RecaptchaMock', array('_getApiResponse'));
 
 if (!class_exists('PostsTestController')) {
 	class PostsTestController extends Controller {
-		public $name = array('PostsTest');
+		public $name = 'PostsTest';
 		public $components = array('Recaptcha.Recaptcha');
 		public $uses = array();
 		public function test_captcha() {
@@ -31,7 +30,7 @@ if (!class_exists('PostsTestController')) {
  * @package recaptcha
  * @subpackage recaptcha.tests.cases.components
  */
-class RecaptchaTestCase extends AppTestCase {
+class RecaptchaTestCase extends CakeTestCase {
 
 /**
  * startTest
@@ -39,6 +38,7 @@ class RecaptchaTestCase extends AppTestCase {
  * @return void
  */
 	function startTest() {
+		Configure::write('Recaptcha.privateKey', 'a-private-key');
 		$this->Controller = new PostsTestController();
 		$this->Controller->constructClasses();
 		$this->Controller->Component->init($this->Controller);
