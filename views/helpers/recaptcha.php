@@ -36,7 +36,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Html');
+	public $helpers = array('Form', 'Html');
 
 /**
  * Displays the Recaptcha input
@@ -51,69 +51,49 @@ class RecaptchaHelper extends AppHelper {
 			'publicKey' => Configure::read('Recaptcha.publicKey'),
 			'error' => null,
 			'ssl' => true,
-			'theme' => 'white',
-			'lang'  => 'en'
-		);
-
-		if (Configure::read('Config.language')) {
-			$defaults['lang'] = Configure::read('Config.language');
-		}
+			'error' => false,
+			'div' => array(
+				'class' => 'recaptcha'));
 		$options = array_merge($defaults, $options);
+		extract($options);
 
-		if (!empty($options['element'])) {
+		if ($ssl) {
+			$server = $this->secureApiUrl;
+		} else {
+			$server = $this->apiUrl;
+		}
+
+		$errorpart = "";
+		if ($error) {
+			$errorpart = "&amp;error=" . $error;
+		}
+
+		if (!empty($element)) {
 			$elementOptions = array();
-			if (is_array($options['element'])) {
-				$keys = array_keys($options['element']);
-				$elementOptions = $options['element'][$keys[0]];
+			if (is_array($element)) {
+				$keys = array_keys($element);
+				$elementOptions = $element[$keys[0]];
 			}
 			$View = $this->__view();
-			return $View->element($options['element'], $elementOptions);
+			return $View->element($element, $elementOptions);
 		}
 
-		$result = $this->_buildOptions($options);
-		$result .= $this->_buildScripts($options);
-		return $result;
-	}
+		$script = '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
+		<noscript>
+			<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
+			<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+			<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+		</noscript>';
 
-/**
- * Build the Recaptcha options, and return script block for output.
- *
- * @param array $options Options
- * @return string
- */
-	protected function _buildOptions($options) {
-		$js = <<<ENDJS
-var RecaptchaOptions = {
-	theme: "${options['theme']}",
-	lang: "${options['lang']}"
-};
-ENDJS;
-		return $this->Html->scriptBlock($js);
-	}
-
-/**
- * Build the script tags to show recaptcha
- *
- * @param array $options Options
- * @return string
- */
-	protected function _buildScripts($options) {
-		$errorpart = '';
-		if ($options['error']) {
-			$errorpart = '&amp;error=' . $options['error'];
+		if (!empty($error)) {
+			$script .= $this->Form->error($error);
 		}
 
-		$server = $options['ssl'] ? $this->secureApiUrl : $this->apiUrl;
-		$query = '?k=' . $options['publicKey'] . $errorpart;
-		$jsCode = $this->Html->script($server . '/challenge' . $query);
-		$noJsCode = <<<ENDCODE
-<noscript>
-	<iframe src="${server}/noscript${query}" height="300" width="500" frameborder="0"></iframe><br/>
-	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-	<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-</noscript>
-ENDCODE;
-		return $jsCode . $noJsCode;
+		if ($options['div'] != false) {
+			$script = $this->Html->tag('div', $script, $options['div']);
+		}
+
+		return $script;
 	}
 
 /**
@@ -122,7 +102,7 @@ ENDCODE;
  * @return string
  */
 	public function signupUrl($appname = null) {
-		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appname);
+		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
 	}
 
 /**
@@ -231,4 +211,5 @@ ENDCODE;
 		}
 		return ClassRegistry::getObject('view');
 	}
+
 }
