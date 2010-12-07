@@ -32,18 +32,28 @@ class RecaptchaHelper extends AppHelper {
 	public $apiUrl = 'http://www.google.com/recaptcha/api';
 
 /**
+ * View helpers
+ *
+ * @var array
+ */
+	public $helpers = array('Form', 'Html');
+
+/**
  * Displays the Recaptcha input
  *
  * @param
  * @param boolean
  * @return string
  */
-	function display($options = array()) {
+	public function display($options = array()) {
 		$defaults = array(
 			'element' => null, 
 			'publicKey' => Configure::read('Recaptcha.publicKey'),
 			'error' => null,
-			'ssl' => true);
+			'ssl' => true,
+			'error' => false,
+			'div' => array(
+				'class' => 'recaptcha'));
 		$options = array_merge($defaults, $options);
 		extract($options);
 
@@ -69,12 +79,22 @@ class RecaptchaHelper extends AppHelper {
 		}
 		
 		if (!$this->params['isAjax']) {
-			return '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
-			<noscript>
-				<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
-				<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-				<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-			</noscript>';
+			$script = '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
+				<noscript>
+					<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
+					<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+					<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+				</noscript>';
+
+			if (!empty($error)) {
+				$script .= $this->Form->error($error);
+			}
+
+			if ($options['div'] != false) {
+				$script = $this->Html->tag('div', $script, $options['div']);
+			}
+
+			return $script;
 		}
 
 		$id = uniqid('recaptcha-');
@@ -87,7 +107,6 @@ class RecaptchaHelper extends AppHelper {
 					setTimeout("Recaptcha.create(\''.$publicKey.'\', \''.$id.'\', {theme: rTheme});", 1000);
 					RecaptchaOptions = rTheme;
 				</script>';
-		
 	}
 
 /**
@@ -95,7 +114,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @return string
  */
-	function signupUrl($appname = null) {
+	public function signupUrl($appname = null) {
 		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
 	}
 
@@ -116,7 +135,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @return string
  */
-	function __AesEncrypt($value, $key) {
+	private function __AesEncrypt($value, $key) {
 		if (!function_exists('mcrypt_encrypt')) {
 			throw new Exception(__d('recaptcha', 'To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.', true));
 		}
@@ -129,7 +148,7 @@ class RecaptchaHelper extends AppHelper {
 	}
 
 /**
- * 
+ * Mail-hide URL
  *
  * @return string base 64 encrypted string
  */
