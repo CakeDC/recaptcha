@@ -22,14 +22,14 @@ class RecaptchaHelper extends AppHelper {
  *
  * @var string
  */
-	public $secureApiUrl = 'http://api-secure.recaptcha.net';
+	public $secureApiUrl = 'https://www.google.com/recaptcha/api';
 
 /**
  * API Url
  *
  * @var string
  */
-	public $apiUrl = 'http://api.recaptcha.net';
+	public $apiUrl = 'http://www.google.com/recaptcha/api';
 
 /**
  * Displays the Recaptcha input
@@ -67,13 +67,27 @@ class RecaptchaHelper extends AppHelper {
 			$View = $this->__view();
 			return $View->element($element, $elementOptions);
 		}
+		
+		if (!$this->params['isAjax']) {
+			return '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
+			<noscript>
+				<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
+				<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+				<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+			</noscript>';
+		}
 
-		return '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
-		<noscript>
-			<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
-			<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-			<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-		</noscript>';
+		$id = uniqid('recaptcha-');
+		
+		return	'<div id="'.$id.'"></div>' .
+				'<script>var rOptions = RecaptchaOptions</script>' .
+				'<script type="text/javascript" src="'. $server . '/js/recaptcha_ajax.js"></script>' .
+				'<script>
+					var rTheme = "theme" in rOptions ? rOptions.theme : "red";
+					setTimeout("Recaptcha.create(\''.$publicKey.'\', \''.$id.'\', {theme: rTheme});", 1000);
+					RecaptchaOptions = rTheme;
+				</script>';
+		
 	}
 
 /**
