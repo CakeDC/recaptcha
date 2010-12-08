@@ -100,12 +100,25 @@ class RecaptchaHelper extends AppHelper {
 		$id = uniqid('recaptcha-');
 		
 		return	'<div id="'.$id.'"></div>' .
-				'<script>var rOptions = RecaptchaOptions</script>' .
-				'<script type="text/javascript" src="'. $server . '/js/recaptcha_ajax.js"></script>' .
 				'<script>
-					var rTheme = "theme" in rOptions ? rOptions.theme : "red";
-					setTimeout("Recaptcha.create(\''.$publicKey.'\', \''.$id.'\', {theme: rTheme});", 1000);
-					RecaptchaOptions = rTheme;
+					var rOptions = RecaptchaOptions
+					if (window.Recaptcha == undefined) {
+							(function() {
+								var headID = document.getElementsByTagName("head")[0];
+								var newScript = document.createElement("script");
+								newScript.type = "text/javascript";
+								newScript.onload = function() {
+									var rTheme = "theme" in rOptions ? rOptions.theme : "red";
+									Recaptcha.create("' . $publicKey . '", "' . $id . '", {theme: rTheme});
+								};
+								newScript.src = "'. $server . '/js/recaptcha_ajax.js"
+								headID.appendChild(newScript);
+							})();
+					} else {
+						var rTheme = "theme" in rOptions ? rOptions.theme : "red";
+						setTimeout("Recaptcha.create(\''.$publicKey.'\', \''.$id.'\', {theme: rTheme});", 1000);
+						RecaptchaOptions = rTheme;
+					}
 				</script>';
 	}
 
