@@ -69,7 +69,7 @@ class RecaptchaComponent extends Object {
 		$this->Controller = $controller;
 
 		if (empty($this->privateKey)) {
-			throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Cofigure::write('Recaptcha.privateKey', 'your-key');!", true));
+			throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!", true));
 		}
 
 		$defaults = array(
@@ -116,7 +116,7 @@ class RecaptchaComponent extends Object {
 			}
 
 			if ($response[1] == 'incorrect-captcha-sol') {
-				$this->error = __d('recaptcha', 'Incorect captcha', true);
+				$this->error = __d('recaptcha', 'Incorrect captcha', true);
 			} else {
 				$this->error = $response[1];
 			}
