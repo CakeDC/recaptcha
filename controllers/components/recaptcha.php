@@ -65,6 +65,9 @@ class RecaptchaComponent extends Object {
  * @param object Controller object
  */
 	public function initialize(Controller $controller, $settings = array()) {
+		if ($controller->name == 'CakeError') {
+			return;
+		}
 		$this->privateKey = Configure::read('Recaptcha.privateKey');
 		$this->Controller = $controller;
 
