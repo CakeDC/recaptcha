@@ -132,7 +132,7 @@ class RecaptchaHelper extends AppHelper {
 							headID.appendChild(newScript);
 						})();
 					} else {
-						setTimeout("Recaptcha.create(\''.$publicKey.'\', \''.$id.'\', ' . $jsonOptions . ');", 1000);
+						setTimeout(\'Recaptcha.create("'.$publicKey.'", "'.$id.'", ' . $jsonOptions . ')\', 1000);
 					}
 				</script>';
 	}
