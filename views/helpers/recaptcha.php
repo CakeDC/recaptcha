@@ -61,7 +61,11 @@ class RecaptchaHelper extends AppHelper {
 			'div' => array(
 				'class' => 'recaptcha'
 			),
-			'recaptchaOptions' => array()
+			'recaptchaOptions' => array(
+				'theme' => 'red',
+				'lang' => 'en',
+				'custom_translations' => array()
+			)
 		);
 		$options = array_merge($defaults, $options);
 		extract($options);
@@ -87,13 +91,13 @@ class RecaptchaHelper extends AppHelper {
 			return $View->element($element, $elementOptions);
 		}
 
-		if (!empty($recaptchaOptions)) {
-			$configScript = sprintf('var RecaptchaOptions = %s', json_encode($recaptchaOptions));
-			$this->Html->scriptBlock($configScript, array('inline' => false));
-			unset($configScript, $recaptchaOptions);
-		}
+		$jsonOptions = json_encode($recaptchaOptions);
+		unset($recaptchaOptions);
 
-		if (!$this->params['isAjax']) {
+		if (empty($this->params['isAjax'])) {
+			$configScript = sprintf('var RecaptchaOptions = %s', $jsonOptions);
+			$this->Html->scriptBlock($configScript, array('inline' => false));
+
 			$script = '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
 				<noscript>
 					<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
@@ -116,23 +120,19 @@ class RecaptchaHelper extends AppHelper {
 		
 		return	'<div id="'.$id.'"></div>' .
 				'<script>
-					var rOptions = RecaptchaOptions
 					if (window.Recaptcha == undefined) {
 						(function() {
 							var headID = document.getElementsByTagName("head")[0];
 							var newScript = document.createElement("script");
 							newScript.type = "text/javascript";
 							newScript.onload = function() {
-								var rTheme = "theme" in rOptions ? rOptions.theme : "red";
-								Recaptcha.create("' . $publicKey . '", "' . $id . '", {theme: rTheme});
+								Recaptcha.create("' . $publicKey . '", "' . $id . '", ' . $jsonOptions . ');
 							};
 							newScript.src = "'. $server . '/js/recaptcha_ajax.js"
 							headID.appendChild(newScript);
 						})();
 					} else {
-						var rTheme = "theme" in rOptions ? rOptions.theme : "red";
-						setTimeout("Recaptcha.create(\''.$publicKey.'\', \''.$id.'\', {theme: rTheme});", 1000);
-						RecaptchaOptions = rTheme;
+						setTimeout("Recaptcha.create(\''.$publicKey.'\', \''.$id.'\', ' . $jsonOptions . ');", 1000);
 					}
 				</script>';
 	}
@@ -142,7 +142,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @return string
  */
-	public function signupUrl($appname = null) {
+	public function signupUrl($appName = null) {
 		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
 	}
 
