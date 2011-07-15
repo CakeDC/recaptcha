@@ -40,10 +40,16 @@ class RecaptchaHelper extends AppHelper {
 
 /**
  * Displays the Recaptcha input
+ * 
+ * @param array $options An array of options
+ * 
+ * ### Options:
  *
- * @param
- * @param boolean
- * @return string
+ * - `recaptchaOptions` assoc array of options to pass into RecaptchaOptions var, like 'theme', 'lang'
+ *    or 'custom_translations' to runtime configure the widget.
+ * 
+ * @return string The resulting mark up
+ * @access public
  */
 	public function display($options = array()) {
 		$defaults = array(
