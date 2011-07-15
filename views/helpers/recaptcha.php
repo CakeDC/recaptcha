@@ -53,7 +53,10 @@ class RecaptchaHelper extends AppHelper {
 			'ssl' => true,
 			'error' => false,
 			'div' => array(
-				'class' => 'recaptcha'));
+				'class' => 'recaptcha'
+			),
+			'recaptchaOptions' => array()
+		);
 		$options = array_merge($defaults, $options);
 		extract($options);
 
@@ -77,7 +80,13 @@ class RecaptchaHelper extends AppHelper {
 			$View = $this->__view();
 			return $View->element($element, $elementOptions);
 		}
-		
+
+		if (!empty($recaptchaOptions)) {
+			$configScript = sprintf('var RecaptchaOptions = %s', json_encode($recaptchaOptions));
+			$this->Html->scriptBlock($configScript, array('inline' => false));
+			unset($configScript, $recaptchaOptions);
+		}
+
 		if (!$this->params['isAjax']) {
 			$script = '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
 				<noscript>
