@@ -209,7 +209,7 @@ class RecaptchaHelper extends AppHelper {
 		if (!empty($this->globalParams['viewInstance'])) {
 			return $this->globalParams['viewInstance'];
 		}
-		return ClassRegistry::getObject('view');
+		return $this->_View;
 	}
 
 }

@@ -9,8 +9,11 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry', 'Controller', 'Model'));
-App::import('Helper', array('Recaptcha.Recaptcha', 'Html'));
+App::uses('Helper', 'View');
+App::uses('ClassRegistry', 'Utility');
+App::uses('Controller', 'Controller');
+App::uses('Model', 'Model');
+App::uses('RecaptchaHelper', array('Recaptcha.View/Helper'));
 
 /**
  * PostsTestController
@@ -35,7 +38,6 @@ class PostsTestController extends Controller {
 	public $uses = null;
 }
 
-Mock::generate('View', 'MockView');
 
 /**
  * RecaptchaHelperTest
@@ -50,7 +52,7 @@ class RecaptchaHelperTest extends CakeTestCase {
  *
  * @return void
  */
-	function setup() {
+	function setUp() {
 		$view = new View(new PostsTestController());
 		ClassRegistry::addObject('view', $view);
 	}

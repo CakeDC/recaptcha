@@ -9,7 +9,7 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Behavior', 'Recaptcha.Recaptcha');
+App::uses('RecaptchaBehavior', 'Recaptcha.Model/Behavior');
 
 /**
  * Slugged Article
@@ -37,7 +37,7 @@ class RecaptchaBehaviorTest extends CakeTestCase {
  *
  * @return void
  */
-	public function startTest() {
+	public function setUp() {
 		$this->Model = new RecaptchaArticle();
 		$this->Behavior = new RecaptchaBehavior();
 	}
@@ -47,7 +47,7 @@ class RecaptchaBehaviorTest extends CakeTestCase {
  *
  * @return void
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->Model);
 		unset($this->Behavior);
 		ClassRegistry::flush();
@@ -62,12 +62,10 @@ class RecaptchaBehaviorTest extends CakeTestCase {
 		$this->Model->validateCaptcha();
 		$result = $this->Model->invalidFields();
 		$this->assertTrue(empty($result));
-
 		$this->Model->recaptcha = false;
 		$this->Model->recaptchaError = 'Invalid Recaptcha';
-		$this->Model->validateCaptcha();
 		$result = $this->Model->invalidFields();
-		$this->assertEqual($result, array('recaptcha' => 'Invalid Recaptcha'));
+		$this->assertEqual($result, array('recaptcha' => array('Invalid Recaptcha')));
 	}
 
 }
