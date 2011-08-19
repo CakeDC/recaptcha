@@ -74,8 +74,8 @@ class RecaptchaHelper extends AppHelper {
 				$keys = array_keys($element);
 				$elementOptions = $element[$keys[0]];
 			}
-			$View = $this->__view();
-			return $View->element($element, $elementOptions);
+
+			return $this->View->element($element, $elementOptions);
 		}
 
 		$script = '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
@@ -101,7 +101,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @return string
  */
-	function signupUrl($appname = null) {
+	function signupUrl($appName = null) {
 		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
 	}
 
@@ -193,23 +193,11 @@ class RecaptchaHelper extends AppHelper {
  * @return string
  */
 	public function mailHide($email) {
-		$emailparts = __hideEmailParts ($email);
+		$emailparts = $this->__hideEmailParts ($email);
 		$url = $this->mailHideUrl($email);
 
 		return htmlentities($emailparts[0]) . "<a href='" . htmlentities ($url) .
 			"' onclick=\"window.open('" . htmlentities ($url) . "', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;\" title=\"Reveal this e-mail address\">...</a>@" . htmlentities ($emailparts [1]);
-	}
-
-/**
- * Get current view class
- *
- * @return object, View class
- */
-	private function __view() {
-		if (!empty($this->globalParams['viewInstance'])) {
-			return $this->globalParams['viewInstance'];
-		}
-		return $this->_View;
 	}
 
 }

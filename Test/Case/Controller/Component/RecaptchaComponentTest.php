@@ -45,24 +45,24 @@ class RecaptchaComponentTest extends CakeTestCase {
  */
 	public $fixtures = array('plugin.recaptcha.article');
 
-	
-	/**
-	* setUp method
-	*
-	* @return void
-	*/
+/**
+* setUp method
+*
+* @return void
+*/
 	public function setUp() {
 		parent::setUp();
+		Configure::write('Recaptcha.privateKey', 'private-key');
 		$this->Controller = new ArticleTestController();
 		$this->Controller->constructClasses();
 		$this->Controller->startupProcess();
 	}
-	
-	/**
-	 * tearDown method
-	 *
-	 * @return void
-	 */
+
+/**
+ * tearDown method
+ *
+ * @return void
+ */
 	public function tearDown() {
 		unset($this->Controller);
 		ClassRegistry::flush();

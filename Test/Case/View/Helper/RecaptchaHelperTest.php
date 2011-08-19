@@ -9,11 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('Helper', 'View');
-App::uses('ClassRegistry', 'Utility');
 App::uses('Controller', 'Controller');
-App::uses('Model', 'Model');
-App::uses('RecaptchaHelper', array('Recaptcha.View/Helper'));
+App::import('Helper', array('Html', 'Recaptcha.Recaptcha', 'Form'));
 
 /**
  * PostsTestController
@@ -38,7 +35,6 @@ class PostsTestController extends Controller {
 	public $uses = null;
 }
 
-
 /**
  * RecaptchaHelperTest
  *
@@ -52,9 +48,13 @@ class RecaptchaHelperTest extends CakeTestCase {
  *
  * @return void
  */
-	function setUp() {
-		$view = new View(new PostsTestController());
-		ClassRegistry::addObject('view', $view);
+	public function setUp() {
+		Configure::write('Recaptcha.mailHide.publicKey', 'test');
+		Configure::write('Recaptcha.mailHide.privateKey', 'test');
+
+		$this->View = new View(new PostsTestController());
+		ClassRegistry::addObject('view', $this->View);
+		$this->Recaptcha = new RecaptchaHelper($this->View);
 	}
 
 /**
@@ -62,8 +62,54 @@ class RecaptchaHelperTest extends CakeTestCase {
  *
  * @return void
  */
-	function tearDown() {
+	public function tearDown() {
 		ClassRegistry::flush();
 		unset($this->Recaptcha);
 	}
+
+/**
+ * testDisplay method
+ *
+ * @return void
+ */
+	public function testDisplay() {
+		$expected = '<div class="recaptcha"><script type="text/javascript" src="http://api-secure.recaptcha.net/challenge?k="></script>
+		<noscript>
+			<iframe src="http://api-secure.recaptcha.net/noscript?k=" height="300" width="500" frameborder="0"></iframe><br/>
+			<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+			<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+		</noscript></div>';
+		$result = $this->Recaptcha->display();
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * testSignupUrl method
+ *
+ * @return void
+ */
+	public function testSignupUrl() {
+		$expected = 'http://recaptcha.net/api/getkey?domain=' . WWW_ROOT . 'test-app';
+		$result = $this->Recaptcha->signupUrl('test-app');
+	}
+
+/**
+ * testSignupUrl method
+ *
+ * @return void
+ */
+	public function testMailHide() {
+		$expected = 'http://recaptcha.net/api/getkey?domain=' . WWW_ROOT . 'test-app';
+		$result = $this->Recaptcha->mailHide('contact@cakedc.com');
+	}
+
+/**
+ * testMailHideUrl method
+ *
+ * @return void
+ */
+	public function testMailHideUrl() {
+		$result = $this->Recaptcha->mailHideUrl('contact@cakedc.com');
+	}
+
 }
