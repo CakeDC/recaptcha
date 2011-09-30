@@ -52,6 +52,8 @@ class RecaptchaHelperTest extends CakeTestCase {
  */
 	function setup() {
 		$view = new View(new PostsTestController());
+		$this->Recaptcha = new RecaptchaHelper();
+		$this->Recaptcha->Html = new HtmlHelper();
 		ClassRegistry::addObject('view', $view);
 	}
 
@@ -63,5 +65,92 @@ class RecaptchaHelperTest extends CakeTestCase {
 	function tearDown() {
 		ClassRegistry::flush();
 		unset($this->Recaptcha);
+	}
+
+/**
+ * testSignupUrl
+ *
+ * @return void
+ */
+	function testSignupUrl() {
+		$result = $this->Recaptcha->signupUrl('test');
+		$expected = 'http://recaptcha.net/api/getkey?domain=' . WWW_ROOT . '&amp;app=test' ;
+		$this->assertIdentical($expected, $result);
+	}
+
+/**
+ * testDisplayDefault
+ *
+ * @return void
+ */
+	function testDisplayDefault() {
+		$result = $this->Recaptcha->display(array('publicKey' => 'TestKey'));
+		$expected = <<<TEXT
+<script type="text/javascript">
+//<![CDATA[
+var RecaptchaOptions = {
+	theme: "white",
+	lang: "en-us"
+};
+//]]>
+</script><script type="text/javascript" src="http://api-secure.recaptcha.net/challenge?k=TestKey"></script><noscript>
+	<iframe src="http://api-secure.recaptcha.net/noscript?k=TestKey" height="300" width="500" frameborder="0"></iframe><br/>
+	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+	<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+</noscript>
+TEXT;
+		$this->assertIdentical($expected, $result);
+	}
+
+/**
+ * testDisplayTheme
+ *
+ * @return void
+ */
+	function testDisplayTheme() {
+		$result = $this->Recaptcha->display(array(
+			'publicKey' => 'TestKey',
+			'theme' => 'testTheme'));
+		$expected = <<<TEXT
+<script type="text/javascript">
+//<![CDATA[
+var RecaptchaOptions = {
+	theme: "testTheme",
+	lang: "en-us"
+};
+//]]>
+</script><script type="text/javascript" src="http://api-secure.recaptcha.net/challenge?k=TestKey"></script><noscript>
+	<iframe src="http://api-secure.recaptcha.net/noscript?k=TestKey" height="300" width="500" frameborder="0"></iframe><br/>
+	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+	<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+</noscript>
+TEXT;
+		$this->assertIdentical($expected, $result);
+	}
+
+/**
+ * testDisplayError
+ *
+ * @return void
+ */
+	function testDisplayError() {
+		$result = $this->Recaptcha->display(array(
+			'publicKey' => 'TestKey',
+			'error' => 'testError'));
+		$expected = <<<TEXT
+<script type="text/javascript">
+//<![CDATA[
+var RecaptchaOptions = {
+	theme: "white",
+	lang: "en-us"
+};
+//]]>
+</script><script type="text/javascript" src="http://api-secure.recaptcha.net/challenge?k=TestKey&amp;error=testError"></script><noscript>
+	<iframe src="http://api-secure.recaptcha.net/noscript?k=TestKey&amp;error=testError" height="300" width="500" frameborder="0"></iframe><br/>
+	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+	<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+</noscript>
+TEXT;
+		$this->assertIdentical($expected, $result);
 	}
 }

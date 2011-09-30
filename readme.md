@@ -19,6 +19,12 @@ In the view simply call the helpers `display()` method to render the recaptcha i
 
 	echo $this->Recaptcha->display();
 
+You could select another theme, setup it as parameter, for istance:
+
+	echo $this->Recaptcha->display(array('theme' => 'blackglass'));
+
+For the complete list of themes, take a look here: [http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html](http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html).
+
 To check the result simply do something like this in your controller:
 
 	if (!empty($this->data)) {

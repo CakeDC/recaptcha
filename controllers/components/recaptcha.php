@@ -29,7 +29,7 @@ class RecaptchaComponent extends Object {
  *
  * @var string
  */
-	public $apiUrl = 'http://api-verify.recaptcha.net/verify';
+	public $apiUrl = 'http://www.google.com/recaptcha/api/verify';
 
 /**
  * Private API Key
@@ -63,8 +63,12 @@ class RecaptchaComponent extends Object {
  * Callback
  *
  * @param object Controller object
+ * @param Array $settings 
  */
 	public function initialize(Controller $controller, $settings = array()) {
+		if ($controller->name == 'CakeError') {
+			return;
+		}
 		$this->privateKey = Configure::read('Recaptcha.privateKey');
 		$this->Controller = $controller;
 
@@ -75,16 +79,26 @@ class RecaptchaComponent extends Object {
 		$defaults = array(
 			'modelClass' => $this->Controller->modelClass,
 			'errorField' => 'recaptcha',
-			'actions' => array());
+			'actions' => array()
+		);
 
 		$this->settings = array_merge($defaults, $settings);
 		$this->actions = array_merge($this->actions, $this->settings['actions']);
-		extract($this->settings);
+		unset($this->settings['actions']);
+	}
 
+ /**
+ * Callback
+ *
+ * @param object Controller object
+ */
+	public function startup(Controller $controller) {
+		extract($this->settings);
 		if ($this->enabled == true) {
 			$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
 			$this->Controller->{$modelClass}->Behaviors->attach('Recaptcha.Recaptcha', array(
-				'field' => $errorField));
+				'field' => $errorField
+			));
 
 			$this->Controller->{$modelClass}->recaptcha = true;
 			if (in_array($this->Controller->action, $this->actions)) {
@@ -110,6 +124,11 @@ class RecaptchaComponent extends Object {
 
 			$response = $this->_getApiResponse();
 			$response = explode("\n", $response);
+
+			if (empty($response[0])) {
+				$this->error = __d('recaptcha', 'Invalid API response, please contact the site admin.', true);
+				return false;
+			}
 
 			if ($response[0] == 'true') {
 				return true;
