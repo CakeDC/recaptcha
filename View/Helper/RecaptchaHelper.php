@@ -113,6 +113,9 @@ class RecaptchaHelper extends AppHelper {
 				$script = $this->Html->tag('div', $script, $options['div']);
 			}
 
+			$this->Form->unlockField('recaptcha_challenge_field');
+			$this->Form->unlockField('recaptcha_response_field');
+
 			return $script;
 		}
 
