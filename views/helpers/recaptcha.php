@@ -67,7 +67,7 @@ class RecaptchaHelper extends AppHelper {
 				'custom_translations' => array()
 			)
 		);
-		$options = array_merge($defaults, $options);
+		$options = Set::merge($defaults, $options);
 		extract($options);
 
 		if ($ssl) {

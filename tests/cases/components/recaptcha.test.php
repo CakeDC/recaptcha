@@ -39,7 +39,7 @@ if (!class_exists('RecaptchaTestArticle')) {
  * @package recaptcha
  * @subpackage recaptcha.tests.cases.components
  */
-class RecaptchaTestCase extends AppTestCase {
+class RecaptchaTestCase extends CakeTestCase {
 /**
  * fixtures property
  *
@@ -53,6 +53,7 @@ class RecaptchaTestCase extends AppTestCase {
  * @return void
  */
 	function startTest() {
+		Configure::write('Recaptcha.privateKey', 'your-key');
 		$this->Controller = new ArticleTestController();
 		$this->Controller->constructClasses();
 		//$this->Controller->modelClass = 'RecaptchaTestArticle';
