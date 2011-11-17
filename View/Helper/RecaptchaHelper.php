@@ -69,7 +69,8 @@ class RecaptchaHelper extends AppHelper {
 			'recaptchaOptions' => array(
 				'theme' => 'red',
 				'lang' => 'en',
-				'custom_translations' => array()
+				'custom_translations' => array(),
+                                'callback' => 'Recaptcha.focus_response_field'
 			)
 		);
 		$options = array_merge($defaults, $options);
@@ -96,7 +97,7 @@ class RecaptchaHelper extends AppHelper {
 			return $this->View->element($element, $elementOptions);
 		}
 
-		$jsonOptions = json_encode($recaptchaOptions);
+		$jsonOptions = preg_replace('/"callback":"([^"\r\n]*)"/','"callback":$1',json_encode($recaptchaOptions));
 		unset($recaptchaOptions);
 
 		if (empty($this->params['isAjax'])) {
