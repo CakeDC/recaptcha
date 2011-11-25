@@ -10,7 +10,9 @@
  */
 
 App::uses('Controller', 'Controller');
-App::import('Helper', array('Html', 'Recaptcha.Recaptcha', 'Form'));
+App::uses('HtmlHelper', 'View/Helper');
+App::uses('FormHelper', 'View/Helper');
+App::uses('RecaptchaHelper', 'Recaptcha.View/Helper');
 
 /**
  * PostsTestController
@@ -46,11 +48,13 @@ class RecaptchaHelperTest extends CakeTestCase {
 /**
  * setUp method
  *
+ * The mailHide keys have to be in a certain format see https://groups.google.com/group/recaptcha/browse_thread/thread/3edc0ad4adc33073?pli=1#msg_73107610db1a1c15
+ *
  * @return void
  */
 	public function setUp() {
-		Configure::write('Recaptcha.mailHide.publicKey', 'test');
-		Configure::write('Recaptcha.mailHide.privateKey', 'test');
+		Configure::write('Recaptcha.mailHide.publicKey', '01J_tiDKknxUV8w-2NbVFNAQ==');
+		Configure::write('Recaptcha.mailHide.privateKey', '411744faf004d447f8208fc51159dc03');
 
 		$this->View = new View(new PostsTestController());
 		ClassRegistry::addObject('view', $this->View);
@@ -73,12 +77,12 @@ class RecaptchaHelperTest extends CakeTestCase {
  * @return void
  */
 	public function testDisplay() {
-		$expected = '<div class="recaptcha"><script type="text/javascript" src="http://api-secure.recaptcha.net/challenge?k="></script>
-		<noscript>
-			<iframe src="http://api-secure.recaptcha.net/noscript?k=" height="300" width="500" frameborder="0"></iframe><br/>
-			<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-			<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-		</noscript></div>';
+		$expected = '<div class="recaptcha"><script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k="></script>
+				<noscript>
+					<iframe src="https://www.google.com/recaptcha/api/noscript?k=" height="300" width="500" frameborder="0"></iframe><br/>
+					<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+					<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
+				</noscript></div>';
 		$result = $this->Recaptcha->display();
 		$this->assertEqual($result, $expected);
 	}

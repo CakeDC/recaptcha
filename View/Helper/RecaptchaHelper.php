@@ -64,15 +64,13 @@ class RecaptchaHelper extends AppHelper {
 			'ssl' => true,
 			'error' => false,
 			'div' => array(
-				'class' => 'recaptcha'
-			),
+				'class' => 'recaptcha'),
 			'recaptchaOptions' => array(
 				'theme' => 'red',
 				'lang' => 'en',
 				'custom_translations' => array(),
-                                'callback' => 'Recaptcha.focus_response_field'
-			)
-		);
+					'callback' => 'Recaptcha.focus_response_field'));
+
 		$options = array_merge($defaults, $options);
 		extract($options);
 
@@ -243,7 +241,7 @@ class RecaptchaHelper extends AppHelper {
  * @return string
  */
 	public function mailHide($email) {
-		$emailparts = $this->__hideEmailParts ($email);
+		$emailparts = $this->__hideEmailParts($email);
 		$url = $this->mailHideUrl($email);
 
 		return htmlentities($emailparts[0]) . "<a href='" . htmlentities ($url) .
