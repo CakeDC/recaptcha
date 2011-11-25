@@ -45,6 +45,11 @@ class RecaptchaHelper extends AppHelper {
  * 
  * ### Options:
  *
+ * - `element` String, name of the view element that can be used instead of the hardcoded HTML structure from this helper
+ * - `publicKey` String, default is read from Configure::read('Recaptcha.publicKey'), you can override it here
+ * - `error` String, optional error message that is displayed using Form::error()
+ * - `ssl` Boolean, use SSL or not, default is true
+ * - `div` Array of options for the div tag the recaptcha is wrapped with, set to false if you want to disable it
  * - `recaptchaOptions` assoc array of options to pass into RecaptchaOptions var, like 'theme', 'lang'
  *    or 'custom_translations' to runtime configure the widget.
  * 
