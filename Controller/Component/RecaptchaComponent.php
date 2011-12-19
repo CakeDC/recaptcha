@@ -131,7 +131,7 @@ class RecaptchaComponent extends Component {
 			isset($this->Controller->request->data['recaptcha_response_field'])) {
 
 			$response = $this->_getApiResponse();
-			$response = explode("\n", $response);
+			$response = explode("\n", $response->body());
 
 			if (empty($response[0])) {
 				$this->error = __d('recaptcha', 'Invalid API response, please contact the site admin.', true);
