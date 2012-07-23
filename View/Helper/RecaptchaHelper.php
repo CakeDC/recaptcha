@@ -71,7 +71,7 @@ class RecaptchaHelper extends AppHelper {
 				'custom_translations' => array(),
 					'callback' => 'Recaptcha.focus_response_field'));
 
-		$options = array_merge($defaults, $options);
+		$options = Set::merge($defaults, $options);
 		extract($options);
 
 		if ($ssl) {
