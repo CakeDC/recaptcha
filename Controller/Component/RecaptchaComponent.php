@@ -75,6 +75,10 @@ class RecaptchaComponent extends Component {
 		$this->privateKey = Configure::read('Recaptcha.privateKey');
 		$this->Controller = $controller;
 
+		if (!isset($this->Controller->helpers['Recaptcha.Recaptcha'])) {
+			$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
+		}
+
 		if (empty($this->privateKey)) {
 			throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!", true));
 		}

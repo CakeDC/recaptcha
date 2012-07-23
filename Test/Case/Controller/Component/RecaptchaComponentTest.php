@@ -80,4 +80,12 @@ class RecaptchaComponentTest extends CakeTestCase {
 		$this->assertFalse($this->Controller->Recaptcha->verify());
 	}
 
+/**
+ * Checking that the helper was added by the component to the controllers helpers array
+ *
+ * @link https://github.com/CakeDC/recaptcha/issues/14
+ */
+	public function testHelperWasLoaded() {
+		$this->assertTrue(in_array('Recaptcha.Recaptcha', $this->Controller->helpers));
+	}
 }
