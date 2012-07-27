@@ -9,11 +9,9 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Lib', 'AppTestCase');
-App::import('Core', 'Controller');
-App::import('Component', 'Recaptcha.Recaptcha');
-
-Mock::generatePartial('Recaptcha', 'RecaptchaMock', array('_getApiResponse'));
+App::uses('CakeTestCase', 'TestSuite');
+App::uses('Controller', 'Controller');
+App::uses('RecaptchaComponent', 'Recaptcha.Controller/Component');
 
 if (!class_exists('ArticlesTestController')) {
 	class ArticleTestController extends Controller {
@@ -39,7 +37,7 @@ if (!class_exists('RecaptchaTestArticle')) {
  * @package recaptcha
  * @subpackage recaptcha.tests.cases.components
  */
-class RecaptchaTestCase extends CakeTestCase {
+class RecaptchaComponentTest extends CakeTestCase {
 /**
  * fixtures property
  *
@@ -48,27 +46,27 @@ class RecaptchaTestCase extends CakeTestCase {
 	public $fixtures = array('plugin.recaptcha.article');
 
 /**
- * startTest
- *
- * @return void
- */
-	function startTest() {
-		Configure::write('Recaptcha.privateKey', 'your-key');
+* setUp method
+*
+* @return void
+*/
+	public function setUp() {
+		parent::setUp();
+		Configure::write('Recaptcha.privateKey', 'private-key');
 		$this->Controller = new ArticleTestController();
 		$this->Controller->constructClasses();
-		//$this->Controller->modelClass = 'RecaptchaTestArticle';
-		$this->Controller->Component->init($this->Controller);
-		$this->Controller->Component->initialize($this->Controller);
+		$this->Controller->startupProcess();
 	}
 
 /**
- * endTest
+ * tearDown method
  *
  * @return void
  */
-	function endTest() {
+	public function tearDown() {
 		unset($this->Controller);
 		ClassRegistry::flush();
+		parent::tearDown();
 	}
 
 /**
@@ -77,9 +75,17 @@ class RecaptchaTestCase extends CakeTestCase {
  * @return void
  */
 	public function testRecaptcha() {
-		$this->Controller->params['form']['recaptcha_challenge_field'] = 'something';
-		$this->Controller->params['form']['recaptcha_response_field'] = 'something';
+		$this->Controller->request->data['recaptcha_challenge_field'] = 'something';
+		$this->Controller->request->data['recaptcha_response_field'] = 'something';
 		$this->assertFalse($this->Controller->Recaptcha->verify());
 	}
 
+/**
+ * Checking that the helper was added by the component to the controllers helpers array
+ *
+ * @link https://github.com/CakeDC/recaptcha/issues/14
+ */
+	public function testHelperWasLoaded() {
+		$this->assertTrue(in_array('Recaptcha.Recaptcha', $this->Controller->helpers));
+	}
 }

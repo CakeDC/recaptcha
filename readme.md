@@ -6,7 +6,7 @@ The Recaptcha plugin for CakePHP provides spam protection in an easy use helper.
 
 ## Usage ##
 
-To use the recaptcha plugin its required to include the following two lines in your `/app/config/bootstrap.php` file.
+To use the recaptcha plugin its required to include the following two lines in your `/app/Config/bootstrap.php` file.
 
 	Configure::write('Recaptcha.publicKey', 'your-public-api-key');
 	Configure::write('Recaptcha.privateKey', 'your-private-api-key');
@@ -23,13 +23,13 @@ In the view simply call the helpers `display()` method to render the recaptcha i
 
 You could select another theme, setup it as parameter, for istance:
 
-	echo $this->Recaptcha->display(array('recaptchaOptions' => array('theme' => 'blackglass'));
+	echo $this->Recaptcha->display(array('recaptchaOptions'=>array('theme' => 'blackglass')));
 
 For the complete list of themes, take a look here: [http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html](http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html).
 
 To check the result simply do something like this in your controller:
 
-	if (!empty($this->data)) {
+	if ($this->request->is('post')) {
 		if ($this->Recaptcha->verify()) {
 			// do something, save you data, login, whatever
 		} else {
@@ -41,7 +41,7 @@ To check the result simply do something like this in your controller:
 ## Requirements ##
 
 * PHP version: PHP 5.2+
-* CakePHP version: Cakephp 1.3 Stable
+* CakePHP version: Cakephp 2.0
 
 ## Support ##
 
