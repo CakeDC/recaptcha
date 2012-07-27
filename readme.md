@@ -1,6 +1,4 @@
-# Recaptcha Plugin for CakePHP #
-
-for CakePHP 2.x 
+# Recaptcha Plugin for CakePHP 2.x #
 
 The Recaptcha plugin for CakePHP provides spam protection in an easy use helper.
 
