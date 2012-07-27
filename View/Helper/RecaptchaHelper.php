@@ -45,6 +45,11 @@ class RecaptchaHelper extends AppHelper {
  * 
  * ### Options:
  *
+ * - `element` String, name of the view element that can be used instead of the hardcoded HTML structure from this helper
+ * - `publicKey` String, default is read from Configure::read('Recaptcha.publicKey'), you can override it here
+ * - `error` String, optional error message that is displayed using Form::error()
+ * - `ssl` Boolean, use SSL or not, default is true
+ * - `div` Array of options for the div tag the recaptcha is wrapped with, set to false if you want to disable it
  * - `recaptchaOptions` assoc array of options to pass into RecaptchaOptions var, like 'theme', 'lang'
  *    or 'custom_translations' to runtime configure the widget.
  * 
@@ -59,14 +64,13 @@ class RecaptchaHelper extends AppHelper {
 			'ssl' => true,
 			'error' => false,
 			'div' => array(
-				'class' => 'recaptcha'
-			),
+				'class' => 'recaptcha'),
 			'recaptchaOptions' => array(
 				'theme' => 'red',
 				'lang' => 'en',
-				'custom_translations' => array()
-			)
-		);
+				'custom_translations' => array(),
+					'callback' => 'Recaptcha.focus_response_field'));
+
 		$options = Set::merge($defaults, $options);
 		extract($options);
 
@@ -87,11 +91,11 @@ class RecaptchaHelper extends AppHelper {
 				$keys = array_keys($element);
 				$elementOptions = $element[$keys[0]];
 			}
-			$View = $this->__view();
-			return $View->element($element, $elementOptions);
+
+			return $this->View->element($element, $elementOptions);
 		}
 
-		$jsonOptions = json_encode($recaptchaOptions);
+		$jsonOptions = preg_replace('/"callback":"([^"\r\n]*)"/','"callback":$1',json_encode($recaptchaOptions));
 		unset($recaptchaOptions);
 
 		if (empty($this->params['isAjax'])) {
@@ -112,6 +116,9 @@ class RecaptchaHelper extends AppHelper {
 			if ($options['div'] != false) {
 				$script = $this->Html->tag('div', $script, $options['div']);
 			}
+
+			$this->Form->unlockField('recaptcha_challenge_field');
+			$this->Form->unlockField('recaptcha_response_field');
 
 			return $script;
 		}
@@ -234,23 +241,11 @@ class RecaptchaHelper extends AppHelper {
  * @return string
  */
 	public function mailHide($email) {
-		$emailparts = __hideEmailParts ($email);
+		$emailparts = $this->__hideEmailParts($email);
 		$url = $this->mailHideUrl($email);
 
 		return htmlentities($emailparts[0]) . "<a href='" . htmlentities ($url) .
 			"' onclick=\"window.open('" . htmlentities ($url) . "', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;\" title=\"Reveal this e-mail address\">...</a>@" . htmlentities ($emailparts [1]);
-	}
-
-/**
- * Get current view class
- *
- * @return object, View class
- */
-	private function __view() {
-		if (!empty($this->globalParams['viewInstance'])) {
-			return $this->globalParams['viewInstance'];
-		}
-		return ClassRegistry::getObject('view');
 	}
 
 }

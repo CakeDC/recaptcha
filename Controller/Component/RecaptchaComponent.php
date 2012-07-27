@@ -9,13 +9,16 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('HttpSocket', 'Network/Http');
+
 /**
  * CakePHP Recaptcha component
  *
  * @package recaptcha
  * @subpackage recaptcha.controllers.components
  */
-class RecaptchaComponent extends Object {
+
+class RecaptchaComponent extends Component {
 
 /**
  * Name
@@ -72,6 +75,10 @@ class RecaptchaComponent extends Object {
 		$this->privateKey = Configure::read('Recaptcha.privateKey');
 		$this->Controller = $controller;
 
+		if (!isset($this->Controller->helpers['Recaptcha.Recaptcha'])) {
+			$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
+		}
+
 		if (empty($this->privateKey)) {
 			throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!", true));
 		}
@@ -108,6 +115,7 @@ class RecaptchaComponent extends Object {
 				}
 			}
 		}
+
 	}
 
 /**
@@ -119,11 +127,11 @@ class RecaptchaComponent extends Object {
  * @return boolean True if the response was correct
  */
 	public function verify() {
-		if (isset($this->Controller->params['form']['recaptcha_challenge_field']) && 
-			isset($this->Controller->params['form']['recaptcha_response_field'])) {
+		if (isset($this->Controller->request->data['recaptcha_challenge_field']) && 
+			isset($this->Controller->request->data['recaptcha_response_field'])) {
 
 			$response = $this->_getApiResponse();
-			$response = explode("\n", $response);
+			$response = explode("\n", $response->body());
 
 			if (empty($response[0])) {
 				$this->error = __d('recaptcha', 'Invalid API response, please contact the site admin.', true);
@@ -150,13 +158,12 @@ class RecaptchaComponent extends Object {
  * @return string
  */
 	protected function _getApiResponse() {
-		App::import('Core', 'HttpSocket');
 		$Socket = new HttpSocket();
 		return $Socket->post($this->apiUrl, array(
 			'privatekey'=> $this->privateKey,
 			'remoteip' => env('REMOTE_ADDR'),
-			'challenge' => $this->Controller->params['form']['recaptcha_challenge_field'],
-			'response' => $this->Controller->params['form']['recaptcha_response_field']));
+			'challenge' => $this->Controller->request->data['recaptcha_challenge_field'],
+			'response' => $this->Controller->request->data['recaptcha_response_field']));
 	}
 
 }
