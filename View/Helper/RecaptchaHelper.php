@@ -65,11 +65,12 @@ class RecaptchaHelper extends AppHelper {
 			'error' => false,
 			'div' => array(
 				'class' => 'recaptcha'),
-			'recaptchaOptions' => array(
-				'theme' => 'red',
-				'lang' => 'en',
-				'custom_translations' => array(),
-					'callback' => 'Recaptcha.focus_response_field'));
+				'recaptchaOptions' => array(
+					'theme' => 'red',
+					'lang' => 'en',
+					'custom_translations' => array()
+				)
+		);
 
 		$options = Set::merge($defaults, $options);
 		extract($options);
@@ -134,6 +135,7 @@ class RecaptchaHelper extends AppHelper {
 							newScript.type = "text/javascript";
 							newScript.onload = function() {
 								Recaptcha.create("' . $publicKey . '", "' . $id . '", ' . $jsonOptions . ');
+								Recaptcha.focus_response_field();
 							};
 							newScript.src = "'. $server . '/js/recaptcha_ajax.js"
 							headID.appendChild(newScript);
