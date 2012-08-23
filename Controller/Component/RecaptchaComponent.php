@@ -63,12 +63,37 @@ class RecaptchaComponent extends Component {
 	public $settings = array();
 
  /**
+ * Default Options
+ *
+ * @var array
+ */
+        protected $_defaults = array(
+		'errorField' => 'recaptcha',
+		'actions' => array()
+        );
+ 
+ /**
+ * Constructor
+ *
+ * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
+ * @param array $settings Array of configuration settings
+ */
+        public function __construct(ComponentCollection $collection, $settings = array()) {
+            parent::__construct($collection, $settings);
+            $this->Controller = $collection->getController();
+            $this->_defaults['modelClass'] = $this->Controller->modelClass;
+            $this->settings = array_merge($this->_defaults, $settings);
+            $this->actions = array_merge($this->actions, $this->settings['actions']);
+            unset($this->settings['actions']);
+    }
+    
+ /**
  * Callback
  *
  * @param object Controller object
  * @param Array $settings 
  */
-	public function initialize(Controller $controller, $settings = array()) {
+	public function initialize(Controller $controller) {
 		if ($controller->name == 'CakeError') {
 			return;
 		}
@@ -82,16 +107,6 @@ class RecaptchaComponent extends Component {
 		if (empty($this->privateKey)) {
 			throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!", true));
 		}
-
-		$defaults = array(
-			'modelClass' => $this->Controller->modelClass,
-			'errorField' => 'recaptcha',
-			'actions' => array()
-		);
-
-		$this->settings = array_merge($defaults, $settings);
-		$this->actions = array_merge($this->actions, $this->settings['actions']);
-		unset($this->settings['actions']);
 	}
 
  /**
