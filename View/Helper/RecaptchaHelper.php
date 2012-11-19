@@ -101,9 +101,9 @@ class RecaptchaHelper extends AppHelper {
 
 		if (empty($this->params['isAjax'])) {
 			$configScript = sprintf('var RecaptchaOptions = %s', $jsonOptions);
-			$this->Html->scriptBlock($configScript, array('inline' => false));
+			$script =$this->Html->scriptBlock($configScript);
 
-			$script = '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
+			$script .= '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
 				<noscript>
 					<iframe src="'. $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>
 					<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
