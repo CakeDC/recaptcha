@@ -1,16 +1,11 @@
-# LANGUAGE translation of the CakePHP Categories plugin
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
 #
-# Copyright 2010, Cake Development Corporation (http://cakedc.com)
-#
-# Licensed under The MIT License
-# Redistributions of files must retain the above copyright notice.
-#
-# @copyright Copyright 2010, Cake Development Corporation (http://cakedc.com)
-# @license MIT License (http://www.opensource.org/licenses/mit-license.php)
-#
-#
+#, fuzzy
+msgid ""
+msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2010-09-15 15:30+0200\n"
+"POT-Creation-Date: 2012-11-19 16:23+0100\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -19,19 +14,23 @@
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /controllers/components/recaptcha.php:79
-msgid "You must set your private recaptcha key using Cofigure::write('Recaptcha.privateKey', 'your-key');!"
+#: Controller/Component/RecaptchaComponent.php:108
+msgid "You must set your private recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!"
 msgstr ""
 
-#: /controllers/components/recaptcha.php:110
-msgid "Incorect captcha"
+#: Controller/Component/RecaptchaComponent.php:152
+msgid "Invalid API response, please contact the site admin."
 msgstr ""
 
-#: /views/helpers/recaptcha.php:115
+#: Controller/Component/RecaptchaComponent.php:161
+msgid "Incorrect captcha"
+msgstr ""
+
+#: View/Helper/RecaptchaHelper.php:177
 msgid "To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed."
 msgstr ""
 
-#: /views/helpers/recaptcha.php:147
+#: View/Helper/RecaptchaHelper.php:207
 msgid "You need to set a private and public mail hide key. Please visit http://mailhide.recaptcha.net/apikey"
 msgstr ""
 
