@@ -74,7 +74,7 @@ class RecaptchaHelper extends AppHelper {
 
 		$options = Set::merge($defaults, $options);
 		extract($options);
-
+                
 		if ($ssl) {
 			$server = $this->secureApiUrl;
 		} else {
@@ -101,7 +101,7 @@ class RecaptchaHelper extends AppHelper {
 
 		if (empty($this->params['isAjax'])) {
 			$configScript = sprintf('var RecaptchaOptions = %s', $jsonOptions);
-			$this->Html->scriptBlock($configScript, array('inline' => false));
+			echo $this->Html->scriptBlock($configScript);
 
 			$script = '<script type="text/javascript" src="'. $server . '/challenge?k=' . $publicKey . '"></script>
 				<noscript>
