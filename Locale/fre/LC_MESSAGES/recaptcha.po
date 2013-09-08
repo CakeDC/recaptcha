@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CakePHP Recaptcha Plugin\n"
+"POT-Creation-Date: 2012-11-19 16:23+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Stéphane BENOIST <stephane@occi-tech.com>\n"
+"Language-Team: CakeDC <contact@cakedc.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+
+#: Controller/Component/RecaptchaComponent.php:108
+msgid "You must set your private recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!"
+msgstr "Vous devez définir votre clé privée Recaptcha en utilisant Configure::write('Recaptcha.privateKey', 'votre-clé'); !"
+
+#: Controller/Component/RecaptchaComponent.php:152
+msgid "Invalid API response, please contact the site admin."
+msgstr "Réponse API invalide, contactez l'administrateur du site."
+
+#: Controller/Component/RecaptchaComponent.php:161
+msgid "Incorrect captcha"
+msgstr "Captcha incorrect"
+
+#: View/Helper/RecaptchaHelper.php:177
+msgid "To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed."
+msgstr "Afin d'utiliser reCAPTCHA Mailhide, vous devez avoir le module php mcrypt installé."
+
+#: View/Helper/RecaptchaHelper.php:207
+msgid "You need to set a private and public mail hide key. Please visit http://mailhide.recaptcha.net/apikey"
+msgstr "Vous devez définir les clés publique et privée mailhide. Veuillez visiter http://mailhide.recaptcha.net/apikey"
+
