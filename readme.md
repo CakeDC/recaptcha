@@ -1,6 +1,4 @@
-# Recaptcha Plugin for CakePHP #
-
-Version 2.1 for CakePHP 2.x
+# Recaptcha Plugin for CakePHP 2.x #
 
 The Recaptcha plugin for CakePHP provides spam protection in an easy use helper.
 
@@ -45,7 +43,7 @@ To check the result simply do something like this in your controller:
 
 ## Support ##
 
-For support and feature request, please visit the [Recaptcha Plugin Support Site](http://cakedc.lighthouseapp.com/projects/60546-recaptcha-plugin/).
+For support and feature request, please visit the [Recaptcha Plugin Support Site](https://github.com/CakeDC/recaptcha/issues).
 
 For more information about our Professional CakePHP Services please visit the [Cake Development Corporation website](http://cakedc.com).
 
@@ -60,7 +58,6 @@ All versions are updated with security patches.
 ## Contributing to this Plugin ##
 
 Please feel free to contribute to the plugin with new issues, requests, unit tests and code fixes or new features. If you want to contribute some code, create a feature branch from develop, and send us your pull request. Unit tests for new features and issues detected are mandatory to keep quality high. 
-
 
 ## License ##
 

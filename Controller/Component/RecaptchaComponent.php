@@ -78,15 +78,15 @@ class RecaptchaComponent extends Component {
  * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
  * @param array $settings Array of configuration settings
  */
-        public function __construct(ComponentCollection $collection, $settings = array()) {
-            parent::__construct($collection, $settings);
-            $this->Controller = $collection->getController();
-            $this->_defaults['modelClass'] = $this->Controller->modelClass;
-            $this->settings = array_merge($this->_defaults, $settings);
-            $this->actions = array_merge($this->actions, $this->settings['actions']);
-            unset($this->settings['actions']);
-    }
-    
+	public function __construct(ComponentCollection $collection, $settings = array()) {
+		parent::__construct($collection, $settings);
+		$this->Controller = $collection->getController();
+		$this->_defaults['modelClass'] = $this->Controller->modelClass;
+		$this->settings = array_merge($this->_defaults, $settings);
+		$this->actions = array_merge($this->actions, $this->settings['actions']);
+		unset($this->settings['actions']);
+	}
+
  /**
  * Callback
  *
@@ -116,21 +116,18 @@ class RecaptchaComponent extends Component {
  */
 	public function startup(Controller $controller) {
 		extract($this->settings);
-		if ($this->enabled == true) {
-			$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
-			$this->Controller->{$modelClass}->Behaviors->attach('Recaptcha.Recaptcha', array(
-				'field' => $errorField
-			));
+		$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
+		$this->Controller->{$modelClass}->Behaviors->attach('Recaptcha.Recaptcha', array(
+			'field' => $errorField
+		));
 
-			$this->Controller->{$modelClass}->recaptcha = true;
-			if (in_array($this->Controller->action, $this->actions)) {
-				if (!$this->verify()) {
-					$this->Controller->{$modelClass}->recaptcha = false;
-					$this->Controller->{$modelClass}->recaptchaError = $this->error;
-				}
+		$this->Controller->{$modelClass}->recaptcha = true;
+		if (in_array($this->Controller->action, $this->actions)) {
+			if (!$this->verify()) {
+				$this->Controller->{$modelClass}->recaptcha = false;
+				$this->Controller->{$modelClass}->recaptchaError = $this->error;
 			}
 		}
-
 	}
 
 /**
