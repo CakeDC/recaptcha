@@ -64,7 +64,7 @@ class RecaptchaBehavior extends ModelBehavior {
  * @object Model instance
  * @return void;
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		$this->validateCaptcha($Model);
 		return true;
 	}
