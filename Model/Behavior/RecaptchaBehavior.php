@@ -16,6 +16,7 @@
  * @subpackage recaptcha.models.behaviors
  */
 class RecaptchaBehavior extends ModelBehavior {
+
 /**
  * Settings array
  *
@@ -34,7 +35,7 @@ class RecaptchaBehavior extends ModelBehavior {
 /**
  * Setup
  *
- * @param AppModel $model
+ * @param Model $Model
  * @param array $settings
  */
 	public function setup(Model $Model, $settings = array()) {
@@ -47,7 +48,7 @@ class RecaptchaBehavior extends ModelBehavior {
 /**
  * Validates the captcha responses status set by the component to the model
  *
- * @object Model instance
+ * @param Model $Model
  * @return boolean
  * @see RecaptchaComponent::initialize()
  */
@@ -61,11 +62,13 @@ class RecaptchaBehavior extends ModelBehavior {
 /**
  * Validates the captcha
  *
- * @object Model instance
- * @return void;
+ * @param Model $Model
+ * @param array $options
+ * @return void
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		$this->validateCaptcha($Model);
 		return true;
 	}
+
 }
