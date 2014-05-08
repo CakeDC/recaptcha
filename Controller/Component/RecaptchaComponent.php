@@ -160,8 +160,10 @@ class RecaptchaComponent extends Component {
 				$this->error = $response[1];
 			}
 
-			return false;
+
 		}
+		
+		return false;
 	}
 
 /**
