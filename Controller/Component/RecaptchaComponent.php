@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009-2014, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009-2014, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -62,21 +62,22 @@ class RecaptchaComponent extends Component {
  */
 	public $settings = array();
 
- /**
+/**
  * Default Options
  *
  * @var array
  */
-        protected $_defaults = array(
+	protected $_defaults = array(
 		'errorField' => 'recaptcha',
 		'actions' => array()
-        );
+	);
  
  /**
  * Constructor
  *
  * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
  * @param array $settings Array of configuration settings
+ * @return RecaptchaComponent
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings);
@@ -87,13 +88,15 @@ class RecaptchaComponent extends Component {
 		unset($this->settings['actions']);
 	}
 
- /**
+/**
  * Callback
  *
- * @param object Controller object
- * @param Array $settings 
+ * @param Controller $controller
+ * @param array $settings
+ * @throws Exception Throws an exception if Recaptchas config is not present
+ * @return void
  */
-	public function initialize(Controller $controller) {
+	public function initialize(Controller $controller, $settings = array()) {
 		if ($controller->name == 'CakeError') {
 			return;
 		}
@@ -105,14 +108,15 @@ class RecaptchaComponent extends Component {
 		}
 
 		if (empty($this->privateKey)) {
-			throw new Exception(__d('recaptcha', "You must set your private recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!", true));
+			throw new Exception(__d('recaptcha', "You must set your private Recaptcha key using Configure::write('Recaptcha.privateKey', 'your-key');!", true));
 		}
 	}
 
- /**
+/**
  * Callback
  *
- * @param object Controller object
+ * @param Controller $controller
+ * @return void
  */
 	public function startup(Controller $controller) {
 		extract($this->settings);
@@ -139,7 +143,7 @@ class RecaptchaComponent extends Component {
  * @return boolean True if the response was correct
  */
 	public function verify() {
-		if (isset($this->Controller->request->data['recaptcha_challenge_field']) && 
+		if (isset($this->Controller->request->data['recaptcha_challenge_field']) &&
 			isset($this->Controller->request->data['recaptcha_response_field'])) {
 
 			$response = $this->_getApiResponse();
@@ -159,9 +163,8 @@ class RecaptchaComponent extends Component {
 			} else {
 				$this->error = $response[1];
 			}
-
-			return false;
 		}
+		return false;
 	}
 
 /**
@@ -172,10 +175,11 @@ class RecaptchaComponent extends Component {
 	protected function _getApiResponse() {
 		$Socket = new HttpSocket();
 		return $Socket->post($this->apiUrl, array(
-			'privatekey'=> $this->privateKey,
+			'privatekey' => $this->privateKey,
 			'remoteip' => env('REMOTE_ADDR'),
 			'challenge' => $this->Controller->request->data['recaptcha_challenge_field'],
-			'response' => $this->Controller->request->data['recaptcha_response_field']));
+			'response' => $this->Controller->request->data['recaptcha_response_field']
+		));
 	}
 
 }
