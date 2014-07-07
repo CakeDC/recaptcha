@@ -36,8 +36,9 @@ class RecaptchaBehavior extends ModelBehavior {
 /**
  * Setup
  *
- * @param Model $Model
- * @param array $settings
+ * @param Model $Model Model using this behavior
+ * @param array $settings Configuration settings for $model
+ * @return void
  */
 	public function setup(Model $Model, $settings = array()) {
 		if (!isset($this->settings[$Model->alias])) {
@@ -49,7 +50,7 @@ class RecaptchaBehavior extends ModelBehavior {
 /**
  * Validates the captcha responses status set by the component to the model
  *
- * @param Model $Model
+ * @param Model $Model Model using this behavior
  * @return boolean
  * @see RecaptchaComponent::initialize()
  */
@@ -63,8 +64,8 @@ class RecaptchaBehavior extends ModelBehavior {
 /**
  * Validates the captcha
  *
- * @param Model $Model
- * @param array $options
+ * @param Model $Model Model using this behavior
+ * @param array $options Options passed from Model::save()
  * @return void
  */
 	public function beforeValidate(Model $Model, $options = array()) {

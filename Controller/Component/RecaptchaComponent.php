@@ -71,8 +71,8 @@ class RecaptchaComponent extends Component {
 		'errorField' => 'recaptcha',
 		'actions' => array()
 	);
- 
- /**
+
+/**
  * Constructor
  *
  * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
@@ -91,8 +91,8 @@ class RecaptchaComponent extends Component {
 /**
  * Callback
  *
- * @param Controller $controller
- * @param array $settings
+ * @param Controller $controller Controller with components to initialize
+ * @param array $settings Array of configuration settings
  * @throws Exception Throws an exception if Recaptchas config is not present
  * @return void
  */
@@ -115,7 +115,7 @@ class RecaptchaComponent extends Component {
 /**
  * Callback
  *
- * @param Controller $controller
+ * @param Controller $controller Controller with components to initialize
  * @return void
  */
 	public function startup(Controller $controller) {
