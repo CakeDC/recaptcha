@@ -71,7 +71,7 @@ class RecaptchaComponent extends Component {
 		'errorField' => 'recaptcha',
 		'actions' => array()
 	);
- 
+
  /**
  * Constructor
  *
@@ -91,13 +91,13 @@ class RecaptchaComponent extends Component {
 /**
  * Callback
  *
- * @param Controller $controller
- * @param array $settings
+ * @param Controller $controller Controller with components to initialize
+ * @param array $settings Array of configuration settings
  * @throws Exception Throws an exception if Recaptchas config is not present
  * @return void
  */
 	public function initialize(Controller $controller, $settings = array()) {
-		if ($controller->name == 'CakeError') {
+		if ($controller->name === 'CakeError') {
 			return;
 		}
 		$this->privateKey = Configure::read('Recaptcha.privateKey');
@@ -115,7 +115,7 @@ class RecaptchaComponent extends Component {
 /**
  * Callback
  *
- * @param Controller $controller
+ * @param Controller $controller Controller with components to initialize
  * @return void
  */
 	public function startup(Controller $controller) {
@@ -154,11 +154,11 @@ class RecaptchaComponent extends Component {
 				return false;
 			}
 
-			if ($response[0] == 'true') {
+			if ($response[0] === 'true') {
 				return true;
 			}
 
-			if ($response[1] == 'incorrect-captcha-sol') {
+			if ($response[1] === 'incorrect-captcha-sol') {
 				$this->error = __d('recaptcha', 'Incorrect captcha', true);
 			} else {
 				$this->error = $response[1];
