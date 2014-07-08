@@ -15,8 +15,26 @@ App::uses('RecaptchaBehavior', 'Recaptcha.Model/Behavior');
  * Slugged Article
  */
 class RecaptchaArticle extends CakeTestModel {
+
+/**
+ * Class name.
+ *
+ * @var string
+ */
 	public $name = 'RecaptchaArticle';
+
+/**
+ * An array of names of behaviors to load.
+ *
+ * @var array
+ */
 	public $actsAs = array('Recaptcha.Recaptcha');
+
+/**
+ * Use table.
+ *
+ * @var mixed False or table name
+ */
 	public $useTable = 'articles';
 }
 

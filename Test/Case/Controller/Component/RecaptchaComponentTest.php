@@ -15,18 +15,59 @@ App::uses('RecaptchaComponent', 'Recaptcha.Controller/Component');
 
 if (!class_exists('ArticlesTestController')) {
 	class ArticleTestController extends Controller {
+
+	/**
+	 * Class name.
+	 *
+	 * @var string
+	 */
 		public $name = 'ArticleTests';
+
+	/**
+	 * An array of names of components to load.
+	 *
+	 * @var array
+	 */
 		public $components = array('Recaptcha.Recaptcha');
+
+	/**
+	 * An array of names of models to load.
+	 *
+	 * @var array
+	 */
 		public $uses = array('RecaptchaTestArticle');
+
+	/**
+	 *
+	 */
 		public function test_captcha() {
 		}
+
 	}
 }
 
 if (!class_exists('RecaptchaTestArticle')) {
 	class RecaptchaTestArticle extends CakeTestModel {
+
+	/**
+	 * Class name.
+	 *
+	 * @var string
+	 */
 		public $name = 'RecaptchaTestArticle';
+
+	/**
+	 * An array of names of behaviors to load.
+	 *
+	 * @var array
+	 */
 		public $actsAs = array('Recaptcha.Recaptcha');
+
+	/**
+	 * Use table.
+	 *
+	 * @var mixed False or table name
+	 */
 		public $useTable = 'articles';
 	}
 }
@@ -38,6 +79,7 @@ if (!class_exists('RecaptchaTestArticle')) {
  * @subpackage recaptcha.tests.cases.components
  */
 class RecaptchaComponentTest extends CakeTestCase {
+
 /**
  * fixtures property
  *
@@ -46,10 +88,10 @@ class RecaptchaComponentTest extends CakeTestCase {
 	public $fixtures = array('plugin.recaptcha.article');
 
 /**
-* setUp method
-*
-* @return void
-*/
+ * setUp method
+ *
+ * @return void
+ */
 	public function setUp() {
 		parent::setUp();
 		Configure::write('Recaptcha.privateKey', 'private-key');
