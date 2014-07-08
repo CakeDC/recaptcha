@@ -72,7 +72,7 @@ class RecaptchaComponent extends Component {
 		'actions' => array()
 	);
 
-/**
+ /**
  * Constructor
  *
  * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
@@ -97,7 +97,7 @@ class RecaptchaComponent extends Component {
  * @return void
  */
 	public function initialize(Controller $controller, $settings = array()) {
-		if ($controller->name == 'CakeError') {
+		if ($controller->name === 'CakeError') {
 			return;
 		}
 		$this->privateKey = Configure::read('Recaptcha.privateKey');
@@ -154,11 +154,11 @@ class RecaptchaComponent extends Component {
 				return false;
 			}
 
-			if ($response[0] == 'true') {
+			if ($response[0] === 'true') {
 				return true;
 			}
 
-			if ($response[1] == 'incorrect-captcha-sol') {
+			if ($response[1] === 'incorrect-captcha-sol') {
 				$this->error = __d('recaptcha', 'Incorrect captcha', true);
 			} else {
 				$this->error = $response[1];
