@@ -1,4 +1,5 @@
 CakeDC Recaptcha Plugin
+=======================
 
 The **Recaptcha** plugin for CakePHP provides spam protection in an easy use helper.
 
