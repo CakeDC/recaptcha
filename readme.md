@@ -1,75 +1,33 @@
-# Recaptcha Plugin for CakePHP 2.x #
+CakeDC Recaptcha Plugin
 
-The Recaptcha plugin for CakePHP provides spam protection in an easy use helper.
+The **Recaptcha** plugin for CakePHP provides spam protection in an easy use helper.
 
-## Usage ##
+Requirements
+------------
 
-To use the recaptcha plugin its required to include the following two lines in your `/app/Config/bootstrap.php` file.
+* CakePHP 2.5+
+* PHP 5.2.8+
 
-	Configure::write('Recaptcha.publicKey', 'your-public-api-key');
-	Configure::write('Recaptcha.privateKey', 'your-private-api-key');
+Documentation
+-------------
 
-Don't forget to replace the placeholder text with your actual keys!
+For documentation, as well as tutorials, see the [Docs](Docs/Home.md) directory of this repository.
 
-Keys can be obtained for free from the [Recaptcha website](http://www.google.com/recaptcha).
+Support
+-------
 
-Controllers that will be using recaptcha require the Recaptcha Component to be included. Through inclusion of the component, the helper is automatically made available to your views.
+For bugs and feature requests, please use the [issues](https://github.com/CakeDC/recaptcha/issues) section of this repository.
 
-In the view simply call the helpers `display()` method to render the recaptcha input:
+Commercial support is also available, [contact us](http://cakedc.com/contact) for more information.
 
-	echo $this->Recaptcha->display();
+Contributing
+------------
 
-You could select another theme, setup it as parameter, for istance:
+This repository follows the [CakeDC Plugin Standard](http://cakedc.com/plugin-standard). If you'd like to contribute new features, enhancements or bug fixes to the plugin, please read our [Contribution Guidelines](http://cakedc.com/contribution-guidelines) for detailed instructions.
 
-	echo $this->Recaptcha->display(array('recaptchaOptions'=>array('theme' => 'blackglass')));
+License
+-------
 
-For the complete list of themes, take a look here: [http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html](http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html).
+Copyright 2007-2014 Cake Development Corporation (CakeDC). All rights reserved.
 
-To check the result simply do something like this in your controller:
-
-	if ($this->request->is('post')) {
-		if ($this->Recaptcha->verify()) {
-			// do something, save you data, login, whatever
-		} else {
-			// display the raw API error
-			$this->Session->setFlash($this->Recaptcha->error);
-		}
-	}
-
-## Requirements ##
-
-* PHP version: PHP 5.2+
-* CakePHP version: Cakephp 2.0
-
-## Support ##
-
-For support and feature request, please visit the [Recaptcha Plugin Support Site](https://github.com/CakeDC/recaptcha/issues).
-
-For more information about our Professional CakePHP Services please visit the [Cake Development Corporation website](http://cakedc.com).
-
-## Branch strategy ##
-
-The master branch holds the STABLE latest version of the plugin. 
-Develop branch is UNSTABLE and used to test new features before releasing them. 
-
-Previous maintenance versions are named after the CakePHP compatible version, for example, branch 1.3 is the maintenance version compatible with CakePHP 1.3.
-All versions are updated with security patches.
-
-## Contributing to this Plugin ##
-
-Please feel free to contribute to the plugin with new issues, requests, unit tests and code fixes or new features. If you want to contribute some code, create a feature branch from develop, and send us your pull request. Unit tests for new features and issues detected are mandatory to keep quality high. 
-
-## License ##
-
-Copyright 2009-2014, [Cake Development Corporation](http://cakedc.com)
-
-Licensed under [The MIT License](http://www.opensource.org/licenses/mit-license.php)<br/>
-Redistributions of files must retain the above copyright notice.
-
-## Copyright ###
-
-Copyright 2009-2011<br/>
-[Cake Development Corporation](http://cakedc.com)<br/>
-1785 E. Sahara Avenue, Suite 490-423<br/>
-Las Vegas, Nevada 89104<br/>
-http://cakedc.com<br/>
+Licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php) License. Redistributions of the source code included in this repository must retain the copyright notice found in each file.
