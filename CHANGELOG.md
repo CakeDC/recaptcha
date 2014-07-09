@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Release 2.2.4
+-------------
+
+https://github.com/CakeDC/recaptcha/tree/2.2.4
+
+ * [f8459df](https://github.com/CakeDC/recaptcha/commit/f8459df) Formatting some code in Setup.md and updating semver
+ * [c2c88a8](https://github.com/CakeDC/recaptcha/commit/c2c88a8) Fixing the installation instructions
+
 Release 2.2.3
 -------------
 

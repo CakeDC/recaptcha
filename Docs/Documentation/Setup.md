@@ -23,7 +23,12 @@ echo $this->Recaptcha->display();
 You could select another theme, setup it as parameter, for istance:
 
 ```php
-echo $this->Recaptcha->display(array('recaptchaOptions'=>array('theme' => 'blackglass')));
+echo $this->Recaptcha->display(array(
+	'recaptchaOptions' => array(
+			'theme' => 'blackglass'
+		)
+	)
+);
 ```
 
 For the complete list of themes, take a look here: [http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html](http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html).
