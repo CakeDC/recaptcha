@@ -14,6 +14,9 @@ Keys can be obtained for free from the [Recaptcha website](http://www.google.com
 
 Controllers that will be using recaptcha require the Recaptcha Component to be included. Through inclusion of the component, the helper is automatically made available to your views.
 
+```php
+public $components = array('Recaptcha.Recaptcha');
+```
 In the view simply call the helpers `display()` method to render the recaptcha input:
 
 ```php
