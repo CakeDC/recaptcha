@@ -34,7 +34,7 @@ echo $this->Recaptcha->display(array(
 );
 ```
 
-For the complete list of themes, take a look here: [http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html](http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html).
+For the complete list of themes, take a look here: [https://developers.google.com/recaptcha/docs/customization](https://developers.google.com/recaptcha/docs/customization).
 
 To check the result simply do something like this in your controller:
 
