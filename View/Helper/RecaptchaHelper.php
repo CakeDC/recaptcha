@@ -139,7 +139,7 @@ class RecaptchaHelper extends AppHelper {
 		$script .= '			Recaptcha.create("' . $publicKey . '", "' . $id . '", ' . $jsonOptions . ');';
 		$script .= '		  Recaptcha.focus_response_field();';
 		$script .= '		};';
-		$script .= '		newScript.src = "' . $server . '/js/recaptcha_ajax.js"';
+		$script .= '		newScript.src = "' . $server . '/js/recaptcha_ajax.js";';
 		$script .= '	  headID.appendChild(newScript);';
 		$script .= '  })();';
 		$script .= '} else {';
