@@ -32,3 +32,11 @@ License
 Copyright 2007-2014 Cake Development Corporation (CakeDC). All rights reserved.
 
 Licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php) License. Redistributions of the source code included in this repository must retain the copyright notice found in each file.
+
+SecrurityComponent in Cakephp3.x
+-------
+
+You will need to add following code to your application in every Template you use recaptcha, if you use Secrurity Component. SecrurityComponent is designed to stop hidden fields to change, which is the main function of Recaptcha.
+
+<?= $this->Form->unlockField('recaptcha-token') ?>
+<?= $this->Form->unlockField('g-recaptcha-response') ?>
