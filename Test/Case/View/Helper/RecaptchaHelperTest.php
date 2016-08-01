@@ -84,7 +84,7 @@ class RecaptchaHelperTest extends CakeTestCase {
 					<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
 				</noscript></div>';
 		$result = $this->Recaptcha->display();
-		$this->assertEqual($result, $expected);
+		$this->assertXmlStringEqualsXmlString($result, $expected);
 	}
 
 /**

@@ -10,6 +10,7 @@
  */
 
 App::uses('HttpSocket', 'Network/Http');
+App::uses('Model', 'Model');
 
 /**
  * CakePHP Recaptcha component
@@ -120,6 +121,11 @@ class RecaptchaComponent extends Component {
  */
 	public function startup(Controller $controller) {
 		extract($this->settings);
+
+		if (!($this->Controller->{$modelClass} instanceof Model)) {
+			return;
+		}
+
 		$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
 		$this->Controller->{$modelClass}->Behaviors->load('Recaptcha.Recaptcha', array(
 			'field' => $errorField
