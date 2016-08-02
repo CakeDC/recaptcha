@@ -14,6 +14,9 @@ App::uses('Controller', 'Controller');
 App::uses('RecaptchaComponent', 'Recaptcha.Controller/Component');
 
 if (!class_exists('ArticlesTestController')) {
+	/**
+	 * @property RecaptchaComponent Recaptcha
+	 */
 	class ArticleTestController extends Controller {
 
 	/**
@@ -75,6 +78,7 @@ if (!class_exists('RecaptchaTestArticle')) {
 /**
  * RecaptchaTestCase
  *
+ * @property ArticleTestController Controller
  * @package recaptcha
  * @subpackage recaptcha.tests.cases.components
  */
@@ -117,8 +121,10 @@ class RecaptchaComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testRecaptcha() {
-		$this->Controller->request->data['recaptcha_challenge_field'] = 'something';
-		$this->Controller->request->data['recaptcha_response_field'] = 'something';
+		$this->Controller->request->data['g-recaptcha-response'] = 'something';
+		$this->assertFalse($this->Controller->Recaptcha->verify());
+
+		$this->Controller->request->data = [];
 		$this->assertFalse($this->Controller->Recaptcha->verify());
 	}
 

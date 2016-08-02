@@ -32,7 +32,7 @@ class RecaptchaComponent extends Component {
  *
  * @var string
  */
-	public $apiUrl = 'http://www.google.com/recaptcha/api/verify';
+	public $apiUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
 /**
  * Private API Key
@@ -119,11 +119,17 @@ class RecaptchaComponent extends Component {
  * @return void
  */
 	public function startup(Controller $controller) {
-		extract($this->settings);
+		$modelClass = Hash::get($this->settings, 'modelClass');
+		$errorField = Hash::get($this->settings, 'errorField');
+
+		if (!($this->Controller->{$modelClass} instanceof Model)) {
+			return;
+		}
+
 		$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
-		$this->Controller->{$modelClass}->Behaviors->load('Recaptcha.Recaptcha', array(
-			'field' => $errorField
-		));
+		$this->Controller->{$modelClass}->Behaviors->load('Recaptcha.Recaptcha', [
+			'field' => $errorField,
+		]);
 
 		$this->Controller->{$modelClass}->recaptcha = true;
 		if (in_array($this->Controller->action, $this->actions)) {
@@ -143,42 +149,34 @@ class RecaptchaComponent extends Component {
  * @return boolean True if the response was correct
  */
 	public function verify() {
-		if (isset($this->Controller->request->data['recaptcha_challenge_field']) &&
-			isset($this->Controller->request->data['recaptcha_response_field'])) {
-
-			$response = $this->_getApiResponse();
-			$response = explode("\n", $response->body());
-
-			if (empty($response[0])) {
-				$this->error = __d('recaptcha', 'Invalid API response, please contact the site admin.', true);
-				return false;
-			}
-
-			if ($response[0] === 'true') {
-				return true;
-			}
-
-			if ($response[1] === 'incorrect-captcha-sol') {
-				$this->error = __d('recaptcha', 'Incorrect captcha', true);
-			} else {
-				$this->error = $response[1];
-			}
+		if (!isset($this->Controller->request->data['g-recaptcha-response'])) {
+			return false;
 		}
-		return false;
+
+		$response = $this->_getApiResponse();
+		if (!$response = json_decode($response->body())) {
+			$this->error = __d('recaptcha', 'Invalid API response, please contact the site admin.', true);
+			return false;
+		}
+
+		if (!$response->success) {
+			$this->error = __d('recaptcha', 'Incorrect captcha', true);
+		}
+
+		return $response->success;
 	}
 
 /**
  * Queries the Recaptcha API and and returns the raw response
  *
- * @return string
+ * @return HttpSocketResponse
  */
 	protected function _getApiResponse() {
 		$Socket = new HttpSocket();
 		return $Socket->post($this->apiUrl, array(
-			'privatekey' => $this->privateKey,
+			'secret'   => $this->privateKey,
 			'remoteip' => env('REMOTE_ADDR'),
-			'challenge' => $this->Controller->request->data['recaptcha_challenge_field'],
-			'response' => $this->Controller->request->data['recaptcha_response_field']
+			'response' => $this->Controller->request->data['g-recaptcha-response'],
 		));
 	}
 
