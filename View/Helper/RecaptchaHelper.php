@@ -12,24 +12,20 @@
 /**
  * CakePHP Recaptcha helper
  *
+ * @property HtmlHelper Html
+ * @property FormHelper Form
+ * @property View View
  * @package recaptcha
  * @subpackage recaptcha.views.helpers
  */
 class RecaptchaHelper extends AppHelper {
 
 /**
- * Secure API Url
- *
- * @var string
- */
-	public $secureApiUrl = 'https://www.google.com/recaptcha/api';
-
-/**
  * API Url
  *
  * @var string
  */
-	public $apiUrl = 'http://www.google.com/recaptcha/api';
+	public $apiUrl = 'https://www.google.com/recaptcha/api.js';
 
 /**
  * View helpers
@@ -39,6 +35,35 @@ class RecaptchaHelper extends AppHelper {
 	public $helpers = array('Form', 'Html');
 
 /**
+ * Callback function name (fot explicit rendering)
+ *
+ * @var string
+ */
+	protected $callback = 'onRecaptchaLoadCallback';
+
+/**
+ * Items to render explicitly
+ *
+ * @var array
+ */
+	protected $explicit = array();
+
+	public function afterRender($viewFile) {
+		if ($this->explicit) {
+			$script = array();
+
+			$script[] = sprintf("var %s = function() {", $this->callback);
+			foreach ($this->explicit as $k => $v) {
+				array_unshift($script, sprintf('var %s;', $k));
+				$script[] = sprintf('%s = grecaptcha.render(\'%s\', %s);', $k, $k, json_encode($v));
+			}
+			$script[] = "}";
+
+			$this->Html->scriptBlock(implode("\n", $script), array('block' => 'script'));
+		}
+	}
+
+/**
  * Displays the Recaptcha input
  *
  * @param array $options An array of options
@@ -46,47 +71,33 @@ class RecaptchaHelper extends AppHelper {
  * ### Options:
  *
  * - `element` String, name of the view element that can be used instead of the hardcoded HTML structure from this helper
- * - `publicKey` String, default is read from Configure::read('Recaptcha.publicKey'), you can override it here
+ * - `explicit` reCAPTCHA rendering method. Set to true when rendering multiple reCAPTCHAs on a page
  * - `error` String, optional error message that is displayed using Form::error()
- * - `ssl` Boolean, use SSL or not, default is true
  * - `div` Array of options for the div tag the recaptcha is wrapped with, set to false if you want to disable it
- * - `recaptchaOptions` assoc array of options to pass into RecaptchaOptions var, like 'theme', 'lang'
- *    or 'custom_translations' to runtime configure the widget.
+ * - `lang` Forces the widget to render in a specific language
+ * - `recaptchaOptions` assoc array of options to pass into RecaptchaOptions var, like 'sitekey' (default is read from Configure::read('Recaptcha.publicKey')), 'theme', 'type', 'size.
  *
  * @return string The resulting mark up
  * @access public
  */
 	public function display($options = array()) {
 		$defaults = array(
-			'element' => null,
-			'publicKey' => Configure::read('Recaptcha.publicKey'),
-			'error' => null,
-			'ssl' => true,
-			'error' => false,
-			'div' => array(
-				'class' => 'recaptcha'),
-				'recaptchaOptions' => array(
-					'theme' => 'red',
-					'lang' => 'en',
-					'custom_translations' => array()
-				)
+			'element'          => null,
+			'explicit'         => false,
+			'error'            => false,
+			'div'              => array(
+				'class' => 'recaptcha',
+			),
+			'lang'             => 'en',
+			'recaptchaOptions' => array(
+				'sitekey' => Configure::read('Recaptcha.publicKey'),
+				'theme'   => 'light',
+			),
 		);
 
-		$options = Set::merge($defaults, $options);
-		extract($options);
+		$options = Hash::merge($defaults, $options);
 
-		if ($ssl) {
-			$server = $this->secureApiUrl;
-		} else {
-			$server = $this->apiUrl;
-		}
-
-		$errorpart = "";
-		if ($error) {
-			$errorpart = "&amp;error=" . $error;
-		}
-
-		if (!empty($element)) {
+		if ($element = $options['element']) {
 			$elementOptions = array();
 			if (is_array($element)) {
 				$keys = array_keys($element);
@@ -96,58 +107,56 @@ class RecaptchaHelper extends AppHelper {
 			return $this->View->element($element, $elementOptions);
 		}
 
-		$jsonOptions = preg_replace('/"callback":"([^"\r\n]*)"/', '"callback":$1', json_encode($recaptchaOptions));
-		unset($recaptchaOptions);
-
-		if (empty($this->params['isAjax'])) {
-			$configScript = sprintf('var RecaptchaOptions = %s', $jsonOptions);
-			echo $this->Html->scriptBlock($configScript);
-
-			$script = '';
-			$script .= '<script type="text/javascript" src="' . $server . '/challenge?k=' . $publicKey . '"></script>';
-			$script .= '<noscript>';
-			$script .= '	<iframe src="' . $server . '/noscript?k=' . $publicKey . '" height="300" width="500" frameborder="0"></iframe><br/>';
-			$script .= '	<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>';
-			$script .= '  <input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>';
-			$script .= '</noscript>';
-
-			if (!empty($error)) {
-				$script .= $this->Form->error($error);
-			}
-
-			if ($options['div'] != false) {
-				$script = $this->Html->tag('div', $script, $options['div']);
-			}
-
-			$this->Form->unlockField('recaptcha_challenge_field');
-			$this->Form->unlockField('recaptcha_response_field');
-
-			return $script;
+		if ($lang = Hash::get($options, 'recaptchaOptions.lang')) {
+			// Backwards compatibility
+			$options['lang'] = $lang;
+			unset($options['recaptchaOptions']['lang']);
 		}
 
-		$id = uniqid('recaptcha-');
+		if ($publicKey = Hash::get($options, 'publicKey')) {
+			// Backwards compatibility
+			$options['recaptchaOptions']['sitekey'] = $publicKey;
+			unset($options['publicKey']);
+		}
 
-		$script = '';
-		$script .= '<div id="' . $id . '"></div>';
-		$script .= '<script>';
-		$script .= 'if (window.Recaptcha == undefined) {';
-		$script .= '  (function() {';
-		$script .= '	  var headID = document.getElementsByTagName("head")[0];';
-		$script .= '		var newScript = document.createElement("script");';
-		$script .= '		newScript.type = "text/javascript";';
-		$script .= '		newScript.onload = function() {';
-		$script .= '			Recaptcha.create("' . $publicKey . '", "' . $id . '", ' . $jsonOptions . ');';
-		$script .= '		  Recaptcha.focus_response_field();';
-		$script .= '		};';
-		$script .= '		newScript.src = "' . $server . '/js/recaptcha_ajax.js"';
-		$script .= '	  headID.appendChild(newScript);';
-		$script .= '  })();';
-		$script .= '} else {';
-		$script .= '  setTimeout(\'Recaptcha.create("' . $publicKey . '", "' . $id . '", ' . $jsonOptions . ')\', 1000);';
-		$script .= '}';
-		$script .= '</script>';
+		$query = array('hl' => $options['lang']);
 
-		return $script;
+		if ($options['explicit']) {
+			$query = array_merge($query, array('onload' => $this->callback, 'render' => 'explicit'));
+
+			$id = Hash::get($options, 'id', uniqid('recaptcha'));
+			$this->explicit[$id] = $options['recaptchaOptions'];
+
+			$output = $this->Html->tag('div', '', compact('id'));
+		} else {
+			$data = array_combine(
+				array_map(
+					function ($k) {
+						return 'data-' . $k;
+					},
+					array_keys($options['recaptchaOptions'])
+				),
+				$options['recaptchaOptions']
+			);
+			$data['class'] = 'g-recaptcha';
+
+			$output = $this->Html->tag('div', '', $data);
+		}
+
+		if ($error = $options['error']) {
+			$output .= $this->Form->error($error);
+		}
+
+		if ($options['div']) {
+			$output = $this->Html->tag('div', $output, $options['div']);
+		}
+
+		$this->Form->unlockField('g-recaptcha-response');
+
+		$apiUrl = $this->apiUrl . '?' . http_build_query($query);
+		$this->Html->script($apiUrl, array('block' => 'script', 'async' => true, 'defer' => true, 'once' => true));
+
+		return $output;
 	}
 
 /**
@@ -157,7 +166,7 @@ class RecaptchaHelper extends AppHelper {
  * @return string A signup url
  */
 	public function signupUrl($appName = null) {
-		return "http://recaptcha.net/api/getkey?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
+		return "https://www.google.com/recaptcha/admin?domain=" . WWW_ROOT . '&amp;app=' . urlencode($appName);
 	}
 
 /**
@@ -214,7 +223,7 @@ class RecaptchaHelper extends AppHelper {
 		$privateKey = Configure::read('Recaptcha.mailHide.privateKey');
 
 		if ($publicKey == '' || $publicKey == null || $privateKey == "" || $privateKey == null) {
-			throw new Exception(__d('recaptcha', "You need to set a private and public mail hide key. Please visit http://mailhide.recaptcha.net/apikey", true));
+			throw new Exception(__d('recaptcha', "You need to set a private and public mail hide key. Please visit https://www.google.com/recaptcha/mailhide/apikey", true));
 		}
 
 		$key = pack('H*', $privateKey);
@@ -247,7 +256,7 @@ class RecaptchaHelper extends AppHelper {
 
 /**
  * Gets html to display an email address given a public an private key to get a key go to:
- * http://mailhide.recaptcha.net/apikey
+ * https://www.google.com/recaptcha/mailhide/apikey
  *
  * @param string $email An email address
  * @return string
