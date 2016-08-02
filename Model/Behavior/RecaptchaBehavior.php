@@ -66,7 +66,7 @@ class RecaptchaBehavior extends ModelBehavior {
  *
  * @param Model $Model Model using this behavior
  * @param array $options Options passed from Model::save()
- * @return void
+ * @return bool
  */
 	public function beforeValidate(Model $Model, $options = array()) {
 		$this->validateCaptcha($Model);

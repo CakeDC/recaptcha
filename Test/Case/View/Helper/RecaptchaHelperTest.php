@@ -40,6 +40,8 @@ class PostsTestController extends Controller {
 /**
  * RecaptchaHelperTest
  *
+ * @property View View
+ * @property RecaptchaHelper Recaptcha
  * @package recaptcha
  * @subpackage recaptcha.tests.cases.helpers
  */
@@ -55,6 +57,8 @@ class RecaptchaHelperTest extends CakeTestCase {
 	public function setUp() {
 		Configure::write('Recaptcha.mailHide.publicKey', '01J_tiDKknxUV8w-2NbVFNAQ==');
 		Configure::write('Recaptcha.mailHide.privateKey', '411744faf004d447f8208fc51159dc03');
+		Configure::write('Recaptcha.publicKey', '01J_tiDKknxUV8w-2NbVFNAQ==');
+		Configure::write('Recaptcha.privateKey', '411744faf004d447f8208fc51159dc03');
 
 		$this->View = new View(new PostsTestController());
 		ClassRegistry::addObject('view', $this->View);
@@ -77,24 +81,61 @@ class RecaptchaHelperTest extends CakeTestCase {
  * @return void
  */
 	public function testDisplay() {
-		$expected = '<div class="recaptcha"><script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k="></script>
-				<noscript>
-					<iframe src="https://www.google.com/recaptcha/api/noscript?k=" height="300" width="500" frameborder="0"></iframe><br/>
-					<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-					<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-				</noscript></div>';
+		$expected = '<div class="recaptcha"><div data-sitekey="' . Configure::read('Recaptcha.publicKey') .'" data-theme="light" class="g-recaptcha"/></div>';
 		$result = $this->Recaptcha->display();
-		$this->assertEqual($result, $expected);
+		$this->assertXmlStringEqualsXmlString($result, $expected);
+
+		$expected = '<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=en" async="async" defer="defer"></script>';
+		$result = $this->View->fetch('script');
+		$this->assertTextEquals($result, $expected);
 	}
 
 /**
- * testSignupUrl method
+ * testDisplayExplicit method
+ *
+ * @return void
+ */
+	public function testDisplayExplicit() {
+		$id = 'recaptcha123';
+		$expected = '<div class="recaptcha"><div id="' . $id . '"/></div>';
+		$result = $this->Recaptcha->display(array('id' => $id, 'explicit' => true));
+		$this->assertXmlStringEqualsXmlString($result, $expected);
+
+		$expected = '<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=en&onload=onRecaptchaLoadCallback&render=explicit" async="async" defer="defer"></script>';
+		$result = $this->View->fetch('script');
+		$this->assertTextEquals($result, $expected);
+
+		$this->Recaptcha->display(array(
+				'id'               => $id . '4',
+				'explicit'         => true,
+				'recaptchaOptions' => array('theme' => 'dark'),
+			)
+		);
+		$expected = array(
+			$id       => array(
+				'sitekey' => Configure::read('Recaptcha.publicKey'),
+				'theme'   => 'light',
+			),
+			$id . '4' => array(
+				'sitekey' => Configure::read('Recaptcha.publicKey'),
+				'theme'   => 'dark',
+			),
+		);
+		$reflector = new ReflectionProperty('RecaptchaHelper', 'explicit');
+		$reflector->setAccessible(true);
+		$result = $reflector->getValue($this->Recaptcha);
+		$this->assertEquals($result, $expected);
+	}
+
+	/**
+	 * testSignupUrl method
  *
  * @return void
  */
 	public function testSignupUrl() {
-		$expected = 'http://recaptcha.net/api/getkey?domain=' . WWW_ROOT . 'test-app';
+		$expected = 'https://www.google.com/recaptcha/admin?domain=' . WWW_ROOT . '&amp;app=test-app';
 		$result = $this->Recaptcha->signupUrl('test-app');
+		$this->assertTextEquals($expected, $result);
 	}
 
 /**
@@ -103,8 +144,11 @@ class RecaptchaHelperTest extends CakeTestCase {
  * @return void
  */
 	public function testMailHide() {
-		$expected = 'http://recaptcha.net/api/getkey?domain=' . WWW_ROOT . 'test-app';
-		$result = $this->Recaptcha->mailHide('contact@cakedc.com');
+		$email = 'contact@cakedc.com';
+		$url = htmlentities($this->Recaptcha->mailHideUrl($email));
+		$expected = 'cont<a href=\'' . $url . '\' onclick="window.open(\'' . $url . '\', \'\', \'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300\'); return false;" title="Reveal this e-mail address">...</a>@cakedc.com';
+		$result = $this->Recaptcha->mailHide($email);
+		$this->assertTextEquals($expected, $result);
 	}
 
 /**
@@ -113,7 +157,9 @@ class RecaptchaHelperTest extends CakeTestCase {
  * @return void
  */
 	public function testMailHideUrl() {
+		$expected = 'http://mailhide.recaptcha.net/d?k=01J_tiDKknxUV8w-2NbVFNAQ==&c=j7XGXEnoSEqoLbCFEvwv4HFHaJq18FADS4WY2X_gDIo=';
 		$result = $this->Recaptcha->mailHideUrl('contact@cakedc.com');
+		$this->assertTextEquals($expected, $result);
 	}
 
 }

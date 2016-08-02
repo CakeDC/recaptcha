@@ -40,6 +40,8 @@ class RecaptchaArticle extends CakeTestModel {
 
 /**
  * Recaptcha Test case
+ * @property RecaptchaArticle Model
+ * @property RecaptchaBehavior Behavior
  */
 class RecaptchaBehaviorTest extends CakeTestCase {
 
@@ -83,7 +85,7 @@ class RecaptchaBehaviorTest extends CakeTestCase {
 		$this->Model->recaptcha = false;
 		$this->Model->recaptchaError = 'Invalid Recaptcha';
 		$result = $this->Model->invalidFields();
-		$this->assertEqual($result, array('recaptcha' => array('Invalid Recaptcha')));
+		$this->assertEquals($result, array('recaptcha' => array('Invalid Recaptcha')));
 	}
 
 }

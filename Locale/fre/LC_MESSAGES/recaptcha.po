@@ -28,6 +28,6 @@ msgid "To use reCAPTCHA Mailhide, you need to have the mcrypt php module install
 msgstr "Afin d'utiliser reCAPTCHA Mailhide, vous devez avoir le module php mcrypt installé."
 
 #: View/Helper/RecaptchaHelper.php:207
-msgid "You need to set a private and public mail hide key. Please visit http://mailhide.recaptcha.net/apikey"
-msgstr "Vous devez définir les clés publique et privée mailhide. Veuillez visiter http://mailhide.recaptcha.net/apikey"
+msgid "You need to set a private and public mail hide key. Please visit https://www.google.com/recaptcha/mailhide/apikey"
+msgstr "Vous devez définir les clés publique et privée mailhide. Veuillez visiter https://www.google.com/recaptcha/mailhide/apikey"
 

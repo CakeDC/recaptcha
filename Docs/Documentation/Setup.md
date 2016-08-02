@@ -23,18 +23,24 @@ In the view simply call the helpers `display()` method to render the recaptcha i
 echo $this->Recaptcha->display();
 ```
 
-You could select another theme, setup it as parameter, for istance:
+To render multiple recatpchas on a page, pass `['explicit' => true]`:
+
+```php
+echo $this->Recaptcha->display(['explicit' => true]);
+```
+
+You could select another theme, setup it as parameter, for instance:
 
 ```php
 echo $this->Recaptcha->display(array(
 	'recaptchaOptions' => array(
-			'theme' => 'blackglass'
+			'theme' => 'dark'
 		)
 	)
 );
 ```
 
-For the complete list of themes, take a look here: [http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html](http://code.google.com/intl/it-IT/apis/recaptcha/docs/customization.html).
+For the complete list of configuration options, take a look here: [https://developers.google.com/recaptcha/docs/display#config](https://developers.google.com/recaptcha/docs/display#config). Please note you don't need to prefix option names with `data-`.
 
 To check the result simply do something like this in your controller:
 
