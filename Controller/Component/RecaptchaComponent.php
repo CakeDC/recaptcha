@@ -127,9 +127,9 @@ class RecaptchaComponent extends Component {
 		}
 
 		$this->Controller->helpers[] = 'Recaptcha.Recaptcha';
-		$this->Controller->{$modelClass}->Behaviors->load('Recaptcha.Recaptcha', [
+		$this->Controller->{$modelClass}->Behaviors->load('Recaptcha.Recaptcha', array(
 			'field' => $errorField,
-		]);
+		));
 
 		$this->Controller->{$modelClass}->recaptcha = true;
 		if (in_array($this->Controller->action, $this->actions)) {
