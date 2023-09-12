@@ -25,7 +25,7 @@ class RecaptchaHelper extends AppHelper {
  *
  * @var string
  */
-	public $apiUrl = 'https://www.google.com/recaptcha/api.js';
+	public $apiUrl = 'https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha';
 
 /**
  * View helpers

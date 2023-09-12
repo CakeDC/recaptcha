@@ -85,7 +85,7 @@ class RecaptchaHelperTest extends CakeTestCase {
 		$result = $this->Recaptcha->display();
 		$this->assertXmlStringEqualsXmlString($result, $expected);
 
-		$expected = '<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=en" async="async" defer="defer"></script>';
+		$expected = '<script type="text/javascript" src="https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha&hl=en" async="async" defer="defer"></script>';
 		$result = $this->View->fetch('script');
 		$this->assertTextEquals($result, $expected);
 	}
@@ -101,7 +101,7 @@ class RecaptchaHelperTest extends CakeTestCase {
 		$result = $this->Recaptcha->display(array('id' => $id, 'explicit' => true));
 		$this->assertXmlStringEqualsXmlString($result, $expected);
 
-		$expected = '<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=en&onload=onRecaptchaLoadCallback&render=explicit" async="async" defer="defer"></script>';
+		$expected = '<script type="text/javascript" src="https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha&hl=en&onload=onRecaptchaLoadCallback&render=explicit" async="async" defer="defer"></script>';
 		$result = $this->View->fetch('script');
 		$this->assertTextEquals($result, $expected);
 
