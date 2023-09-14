@@ -90,7 +90,7 @@ class RecaptchaHelper extends AppHelper {
 			),
 			'lang'             => 'en',
 			'recaptchaOptions' => array(
-				'sitekey' => Configure::read('Recaptcha.publicKey'),
+				'sitekey' => Configure::read('Turnstile.siteKey'),
 				'theme'   => 'light',
 			),
 		);
